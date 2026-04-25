@@ -1,0 +1,22 @@
+{
+  "name": "voteready-india",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VoteReady India - Election Readiness for Young India",
+  "workspaces": [
+    "apps/*",
+    "services/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "dev:web": "npm run dev --workspace=@voteready/web",
+    "dev:api": "npm run dev --workspace=@voteready/api",
+    "install:all": "npm install"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "prettier": "^3.0.0"
+  }
+}
