@@ -1,0 +1,42 @@
+.app-shell {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
+header {
+  margin-bottom: 3rem;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+  color: #1a1a1a;
+}
+
+.tagline {
+  font-size: 1.25rem;
+  color: #666;
+  font-style: italic;
+}
+
+.status-card {
+  padding: 2rem;
+  border-radius: 12px;
+  background-color: #f9f9f9;
+  border: 1px solid #eee;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.status-card h2 {
+  color: #2c3e50;
+  margin-top: 0;
+}
+
+footer {
+  margin-top: 4rem;
+  color: #888;
+  font-size: 0.9rem;
+}
