@@ -15,3 +15,4 @@ export * from "./assistant";
 export * from "./sourceRegistry";
 export * from "./api";
 export * from "./options";
+export * from "./mockAssistantFixtures";

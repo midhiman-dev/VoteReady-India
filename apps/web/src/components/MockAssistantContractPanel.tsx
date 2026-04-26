@@ -5,7 +5,8 @@ import {
   LanguagePreference, 
   ExplanationMode,
   SUPPORTED_LANGUAGES,
-  SUPPORTED_EXPLANATION_MODES
+  SUPPORTED_EXPLANATION_MODES,
+  DEFAULT_MOCK_ASSISTANT_QUESTION
 } from '@voteready/shared';
 import { postMockAssistantRequest } from '../lib/apiClient';
 import AssistantResponsePreview from './AssistantResponsePreview';
@@ -18,7 +19,7 @@ function formatOptionLabel(val: string): string {
 }
 
 export default function MockAssistantContractPanel() {
-  const [question, setQuestion] = useState('Can you confirm the assistant contract is connected?');
+  const [question, setQuestion] = useState(DEFAULT_MOCK_ASSISTANT_QUESTION);
   const [language, setLanguage] = useState<LanguagePreference>('simple_english');
   const [explanationMode, setExplanationMode] = useState<ExplanationMode>('simple');
   
