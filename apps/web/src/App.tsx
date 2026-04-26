@@ -3,6 +3,7 @@ import { APP_NAME, TAGLINE, AppMetadataResponse, SourceRegistryResponse } from '
 import { getAppMetadata, getSourceRegistry } from './lib/apiClient'
 import ApiStatusCard from './components/ApiStatusCard'
 import SourceRegistryPreview from './components/SourceRegistryPreview'
+import MockAssistantContractPanel from './components/MockAssistantContractPanel'
 import './App.css'
 
 function App() {
@@ -56,9 +57,13 @@ function App() {
         )}
 
         {!loading && !error && metadata && registry && (
-          <div className="metadata-grid">
-            <ApiStatusCard metadata={metadata} />
-            <SourceRegistryPreview registry={registry} />
+          <div className="content-container">
+            <div className="metadata-grid">
+              <ApiStatusCard metadata={metadata} />
+              <SourceRegistryPreview registry={registry} />
+            </div>
+
+            <MockAssistantContractPanel />
           </div>
         )}
 
