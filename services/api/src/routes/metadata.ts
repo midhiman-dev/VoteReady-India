@@ -5,14 +5,13 @@ import {
   TAGLINE, 
   APP_VERSION, 
   LanguagePreference, 
-  ExplanationMode 
+  ExplanationMode,
+  SUPPORTED_LANGUAGES,
+  SUPPORTED_EXPLANATION_MODES
 } from '@voteready/shared';
 import { getAppEnvironment } from '../utils/environment.js';
 
 const router = Router();
-
-export const SUPPORTED_LANGUAGES: LanguagePreference[] = ["english", "simple_english", "hinglish", "hindi"];
-export const SUPPORTED_EXPLANATION_MODES: ExplanationMode[] = ["quick", "simple", "detailed"];
 
 router.get('/', (req, res) => {
   const metadata: AppMetadataResponse = {
