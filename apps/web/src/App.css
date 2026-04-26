@@ -2,18 +2,21 @@
   max-width: 800px;
   margin: 0 auto;
   padding: 2rem;
-  text-align: center;
+  text-align: left;
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  color: #1a1a1a;
 }
 
 header {
   margin-bottom: 3rem;
+  text-align: center;
 }
 
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
   color: #1a1a1a;
+  margin-bottom: 0.5rem;
 }
 
 .tagline {
@@ -22,21 +25,109 @@ h1 {
   font-style: italic;
 }
 
-.status-card {
-  padding: 2rem;
-  border-radius: 12px;
-  background-color: #f9f9f9;
-  border: 1px solid #eee;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+.metadata-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
 }
 
-.status-card h2 {
+.card {
+  padding: 1.5rem;
+  border-radius: 12px;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  transition: transform 0.2s;
+}
+
+.card h2 {
   color: #2c3e50;
   margin-top: 0;
+  font-size: 1.5rem;
+  border-bottom: 2px solid #edf2f7;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.card p {
+  line-height: 1.6;
+  color: #4a5568;
+}
+
+.label {
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.loading, .error {
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.loading {
+  background-color: #ebf8ff;
+  color: #2b6cb0;
+  border: 1px solid #bee3f8;
+}
+
+.error {
+  background-color: #fff5f5;
+  color: #c53030;
+  border: 1px solid #fed7d7;
+}
+
+.source-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.source-item {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #edf2f7;
+}
+
+.source-item:last-child {
+  border-bottom: none;
+}
+
+.source-title {
+  font-weight: 600;
+  display: block;
+  color: #2d3748;
+}
+
+.source-meta {
+  font-size: 0.85rem;
+  color: #718096;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-right: 0.5rem;
+}
+
+.badge-fresh {
+  background-color: #c6f6d5;
+  color: #22543d;
+}
+
+.badge-stale {
+  background-color: #feebc8;
+  color: #744210;
 }
 
 footer {
   margin-top: 4rem;
+  text-align: center;
   color: #888;
   font-size: 0.9rem;
 }
