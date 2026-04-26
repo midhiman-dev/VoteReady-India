@@ -12,3 +12,4 @@ export interface HealthResponse {
 export * from "./common";
 export * from "./source";
 export * from "./assistant";
+export * from "./sourceRegistry";
