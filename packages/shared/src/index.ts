@@ -14,3 +14,4 @@ export * from "./source";
 export * from "./assistant";
 export * from "./sourceRegistry";
 export * from "./api";
+export * from "./options";

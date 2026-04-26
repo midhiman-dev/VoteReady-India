@@ -1,6 +1,10 @@
 import { Router } from 'express';
-import { AssistantRequest, AssistantResponse } from '@voteready/shared';
-import { SUPPORTED_LANGUAGES, SUPPORTED_EXPLANATION_MODES } from './metadata.js';
+import { 
+  AssistantRequest, 
+  AssistantResponse,
+  isSupportedLanguage,
+  isSupportedExplanationMode
+} from '@voteready/shared';
 
 const router = Router();
 
@@ -12,11 +16,11 @@ router.post('/', (req, res) => {
     return res.status(400).json({ error: "Invalid assistant mock request: question is required." });
   }
 
-  if (!language || !SUPPORTED_LANGUAGES.includes(language)) {
+  if (!language || !isSupportedLanguage(language)) {
     return res.status(400).json({ error: "Invalid assistant mock request: language is missing or unsupported." });
   }
 
-  if (!explanationMode || !SUPPORTED_EXPLANATION_MODES.includes(explanationMode)) {
+  if (!explanationMode || !isSupportedExplanationMode(explanationMode)) {
     return res.status(400).json({ error: "Invalid assistant mock request: explanationMode is missing or unsupported." });
   }
 

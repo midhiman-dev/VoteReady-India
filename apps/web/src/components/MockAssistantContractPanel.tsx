@@ -3,10 +3,19 @@ import {
   AssistantRequest, 
   AssistantResponse, 
   LanguagePreference, 
-  ExplanationMode 
+  ExplanationMode,
+  SUPPORTED_LANGUAGES,
+  SUPPORTED_EXPLANATION_MODES
 } from '@voteready/shared';
 import { postMockAssistantRequest } from '../lib/apiClient';
 import AssistantResponsePreview from './AssistantResponsePreview';
+
+/**
+ * Capitalizes string for display (e.g. "simple_english" -> "Simple English")
+ */
+function formatOptionLabel(val: string): string {
+  return val.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+}
 
 export default function MockAssistantContractPanel() {
   const [question, setQuestion] = useState('Can you confirm the assistant contract is connected?');
@@ -68,10 +77,11 @@ export default function MockAssistantContractPanel() {
               value={language}
               onChange={(e) => setLanguage(e.target.value as LanguagePreference)}
             >
-              <option value="english">English</option>
-              <option value="simple_english">Simple English</option>
-              <option value="hinglish">Hinglish</option>
-              <option value="hindi">Hindi</option>
+              {SUPPORTED_LANGUAGES.map((lang) => (
+                <option key={lang} value={lang}>
+                  {formatOptionLabel(lang)}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -82,9 +92,11 @@ export default function MockAssistantContractPanel() {
               value={explanationMode}
               onChange={(e) => setExplanationMode(e.target.value as ExplanationMode)}
             >
-              <option value="quick">Quick</option>
-              <option value="simple">Simple</option>
-              <option value="detailed">Detailed</option>
+              {SUPPORTED_EXPLANATION_MODES.map((mode) => (
+                <option key={mode} value={mode}>
+                  {formatOptionLabel(mode)}
+                </option>
+              ))}
             </select>
           </div>
         </div>
