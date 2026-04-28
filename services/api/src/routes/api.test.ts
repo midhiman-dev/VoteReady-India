@@ -118,4 +118,75 @@ describe('API Routes', () => {
       expect(response.body.error).toContain('explanationMode is missing or unsupported');
     });
   });
+
+  describe('POST /assistant', () => {
+    it('should return safe shell response for valid request', async () => {
+      const validRequest = {
+        question: "Can VoteReady India answer questions yet?",
+        language: "simple_english",
+        explanationMode: "simple"
+      };
+
+      const response = await request(app)
+        .post('/assistant')
+        .send(validRequest)
+        .set('Content-Type', 'application/json');
+
+      expect(response.status).toBe(200);
+      expect(response.body.id).toBeDefined();
+      expect(response.body.status).toBe('cannot_verify');
+      expect(response.body.language).toBe(validRequest.language);
+      expect(response.body.explanationMode).toBe(validRequest.explanationMode);
+      expect(response.body.answerBlocks).toBeInstanceOf(Array);
+      expect(response.body.answerBlocks.length).toBeGreaterThan(0);
+      expect(response.body.sources).toEqual([]);
+      expect(response.body.freshnessSummary.status).toBe('review_due');
+
+      // Check for non-guidance text
+      const fullAnswerText = response.body.answerBlocks.map((b: any) => b.content).join(' ');
+      expect(fullAnswerText).toContain('endpoint is connected');
+      expect(fullAnswerText).toContain('source-backed election guidance is not active');
+      expect(fullAnswerText).not.toContain('eligible');
+      expect(fullAnswerText).not.toContain('deadline');
+    });
+
+    it('should return 400 for empty request body', async () => {
+      const response = await request(app)
+        .post('/assistant')
+        .send({})
+        .set('Content-Type', 'application/json');
+
+      expect(response.status).toBe(400);
+      expect(response.body.error).toContain('question is required');
+    });
+
+    it('should return 400 for unsupported language', async () => {
+      const response = await request(app)
+        .post('/assistant')
+        .send({
+          question: "Test question?",
+          language: "invalid_lang",
+          explanationMode: "simple"
+        })
+        .set('Content-Type', 'application/json');
+
+      expect(response.status).toBe(400);
+      expect(response.body.error).toContain('language is missing or unsupported');
+    });
+
+    it('should return 400 for unsupported explanationMode', async () => {
+      const response = await request(app)
+        .post('/assistant')
+        .send({
+          question: "Test question?",
+          language: "simple_english",
+          explanationMode: "invalid_mode"
+        })
+        .set('Content-Type', 'application/json');
+
+      expect(response.status).toBe(400);
+      expect(response.body.error).toContain('explanationMode is missing or unsupported');
+    });
+  });
 });
+
