@@ -7,7 +7,8 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "dev": "tsx watch src/server.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "@voteready/shared": "*",
@@ -19,6 +20,9 @@
     "@types/cors": "^2.8.13",
     "@types/node": "^20.0.0",
     "tsx": "*",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0",
+    "supertest": "^6.3.3",
+    "@types/supertest": "^2.0.12"
   }
 }
