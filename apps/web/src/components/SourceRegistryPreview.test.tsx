@@ -44,19 +44,31 @@ describe('SourceRegistryPreview', () => {
   it('renders source types and jurisdiction levels', () => {
     render(<SourceRegistryPreview registry={mockRegistry} />);
     expect(screen.getByText(/eci official • national/i)).toBeInTheDocument();
-    expect(screen.getByText(/government open_data • state/i)).toBeInTheDocument();
+    expect(screen.getByText(/government open data • state/i)).toBeInTheDocument();
   });
 
-  it('renders freshness status', () => {
+  it('renders freshness status with human-readable labels', () => {
     render(<SourceRegistryPreview registry={mockRegistry} />);
-    expect(screen.getByText('verified')).toBeInTheDocument();
-    expect(screen.getByText('review_due')).toBeInTheDocument();
+    expect(screen.getByText('Verified', { selector: '.badge' })).toBeInTheDocument();
+    expect(screen.getByText('Review due', { selector: '.badge' })).toBeInTheDocument();
+  });
+
+  it('renders helper text for freshness states', () => {
+    render(<SourceRegistryPreview registry={mockRegistry} />);
+    expect(screen.getByText('Requires review before current procedural use.')).toBeInTheDocument();
+  });
+
+  it('renders safety note about metadata preview', () => {
+    render(<SourceRegistryPreview registry={mockRegistry} />);
+    expect(screen.getByText(/This is a source registry metadata preview/i)).toBeInTheDocument();
   });
 
   it('does not imply review-due sources are verified', () => {
     render(<SourceRegistryPreview registry={mockRegistry} />);
-    const reviewDueElement = screen.getByText('review_due');
+    const reviewDueElement = screen.getByText('Review due', { selector: '.badge' });
     expect(reviewDueElement).not.toHaveClass('badge-fresh');
     expect(reviewDueElement).toHaveClass('badge-stale');
   });
+
 });
+
