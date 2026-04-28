@@ -16,3 +16,5 @@ export * from "./sourceRegistry";
 export * from "./api";
 export * from "./options";
 export * from "./mockAssistantFixtures";
+export * from "./assistantShellFixtures";
+
