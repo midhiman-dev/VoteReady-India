@@ -316,3 +316,12 @@ textarea:focus, select:focus {
   color: #374151;
   text-align: right;
 }
+
+.freshness-helper {
+  display: block;
+  font-size: 0.8rem;
+  color: #4a5568;
+  margin-top: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
