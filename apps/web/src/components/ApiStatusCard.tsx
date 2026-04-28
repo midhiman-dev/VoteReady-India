@@ -9,6 +9,8 @@ const ApiStatusCard: React.FC<ApiStatusCardProps> = ({ metadata }) => {
   return (
     <div className="card">
       <h2>API Metadata</h2>
+      <p><span className="label">App Name:</span> {metadata.appName}</p>
+      <p><span className="label">Tagline:</span> {metadata.tagline}</p>
       <p><span className="label">Environment:</span> {metadata.environment}</p>
       <p><span className="label">API Version:</span> {metadata.apiVersion}</p>
       <p><span className="label">Generated:</span> {new Date(metadata.generatedAt).toLocaleString()}</p>

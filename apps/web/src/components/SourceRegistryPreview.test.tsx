@@ -1,0 +1,62 @@
+import { render, screen } from '@testing-library/react';
+import { describe, it, expect } from 'vitest';
+import SourceRegistryPreview from './SourceRegistryPreview';
+import { SourceRegistryResponse } from '@voteready/shared';
+
+describe('SourceRegistryPreview', () => {
+  const mockRegistry: SourceRegistryResponse = {
+    count: 2,
+    generatedAt: '2026-04-28T00:00:00Z',
+    sources: [
+      {
+        id: 'eci-site',
+        title: 'ECI Website',
+        sourceType: 'eci_official',
+        jurisdictionLevel: 'national',
+        publisher: 'ECI',
+        freshnessStatus: 'verified',
+        url: 'https://eci.gov.in',
+        summary: 'Official ECI Website',
+      },
+      {
+        id: 'state-sec',
+        title: 'State SEC',
+        sourceType: 'government_open_data',
+        jurisdictionLevel: 'state',
+        publisher: 'State',
+        freshnessStatus: 'review_due',
+        summary: 'State SEC Website',
+      },
+    ],
+  };
+
+  it('renders source count', () => {
+    render(<SourceRegistryPreview registry={mockRegistry} />);
+    expect(screen.getByText('2')).toBeInTheDocument();
+  });
+
+  it('renders source titles', () => {
+    render(<SourceRegistryPreview registry={mockRegistry} />);
+    expect(screen.getByText('ECI Website')).toBeInTheDocument();
+    expect(screen.getByText('State SEC')).toBeInTheDocument();
+  });
+
+  it('renders source types and jurisdiction levels', () => {
+    render(<SourceRegistryPreview registry={mockRegistry} />);
+    expect(screen.getByText(/eci official • national/i)).toBeInTheDocument();
+    expect(screen.getByText(/government open_data • state/i)).toBeInTheDocument();
+  });
+
+  it('renders freshness status', () => {
+    render(<SourceRegistryPreview registry={mockRegistry} />);
+    expect(screen.getByText('verified')).toBeInTheDocument();
+    expect(screen.getByText('review_due')).toBeInTheDocument();
+  });
+
+  it('does not imply review-due sources are verified', () => {
+    render(<SourceRegistryPreview registry={mockRegistry} />);
+    const reviewDueElement = screen.getByText('review_due');
+    expect(reviewDueElement).not.toHaveClass('badge-fresh');
+    expect(reviewDueElement).toHaveClass('badge-stale');
+  });
+});
