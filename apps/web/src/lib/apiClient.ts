@@ -39,3 +39,21 @@ export async function postMockAssistantRequest(request: AssistantRequest): Promi
 
   return response.json();
 }
+
+export async function postAssistantRequest(request: AssistantRequest): Promise<AssistantResponse> {
+  const response = await fetch(`${API_BASE_URL}/assistant`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(request),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.error || 'Failed to fetch assistant response');
+  }
+
+  return response.json();
+}
+
