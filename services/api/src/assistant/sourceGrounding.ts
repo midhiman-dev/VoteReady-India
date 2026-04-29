@@ -1,15 +1,21 @@
+import { SAFE_DEMO_SOURCE_FRAGMENTS } from '@voteready/shared';
+
 export interface SourceGroundingContext {
-  status: 'not_configured' | 'no_sources_available';
+  status: 'not_configured' | 'no_sources_available' | 'demo_safe';
   sourceCount: number;
   notes: string[];
 }
 
 export async function getSourceGroundingContext(): Promise<SourceGroundingContext> {
-  // Placeholder implementation for future source fragment retrieval.
-  // Currently not reading source content or requiring real sources.
+  // Read curated demo source fragments safely.
+  const sourceCount = SAFE_DEMO_SOURCE_FRAGMENTS.length;
+  
   return {
-    status: 'not_configured',
-    sourceCount: 0,
-    notes: ['Source-grounding is not implemented in this skeleton.'],
+    status: 'demo_safe',
+    sourceCount,
+    notes: [
+      `Found ${sourceCount} demo-safe source fragments for source-transparency context.`
+    ],
   };
 }
+

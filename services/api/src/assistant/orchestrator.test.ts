@@ -25,9 +25,20 @@ describe('orchestrateAssistantResponse', () => {
     const fullAnswerText = response.answerBlocks.map((b) => b.content).join(' ');
     expect(fullAnswerText).toContain('endpoint is connected');
     expect(fullAnswerText).toContain('source-backed election guidance is not active');
+    
+    // Check that curated demo fragment context is used
+    expect(fullAnswerText).toContain('curated fragments');
 
     // Check that it does not include procedural guidance terms
-    const forbiddenTerms = ['deadline', 'eligibility', 'polling date', 'Form 6'];
+    const forbiddenTerms = [
+      'deadline', 
+      'Form 6', 
+      'eligible', 
+      'eligibility', 
+      'polling date', 
+      'register by', 
+      'voter ID required'
+    ];
     for (const term of forbiddenTerms) {
       expect(fullAnswerText.toLowerCase()).not.toContain(term.toLowerCase());
     }
