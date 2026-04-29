@@ -162,6 +162,40 @@ describe('API Routes', () => {
       }
     });
 
+    it('should return quick safe shell response', async () => {
+      const quickRequest = {
+        question: "Can VoteReady India answer questions yet?",
+        language: "simple_english",
+        explanationMode: "quick"
+      };
+
+      const response = await request(app)
+        .post('/assistant')
+        .send(quickRequest)
+        .set('Content-Type', 'application/json');
+
+      expect(response.status).toBe(200);
+      expect(response.body.explanationMode).toBe('quick');
+      expect(response.body.answerBlocks.length).toBe(1);
+    });
+
+    it('should return detailed safe shell response', async () => {
+      const detailedRequest = {
+        question: "Can VoteReady India answer questions yet?",
+        language: "simple_english",
+        explanationMode: "detailed"
+      };
+
+      const response = await request(app)
+        .post('/assistant')
+        .send(detailedRequest)
+        .set('Content-Type', 'application/json');
+
+      expect(response.status).toBe(200);
+      expect(response.body.explanationMode).toBe('detailed');
+      expect(response.body.answerBlocks.length).toBe(4);
+    });
+
     it('should return 400 for empty request body', async () => {
       const response = await request(app)
         .post('/assistant')
