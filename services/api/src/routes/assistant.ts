@@ -2,13 +2,13 @@ import { Router } from 'express';
 import { 
   AssistantRequest, 
   isSupportedLanguage,
-  isSupportedExplanationMode,
-  createAssistantShellResponse
+  isSupportedExplanationMode
 } from '@voteready/shared';
+import { orchestrateAssistantResponse } from '../assistant/orchestrator.js';
 
 const router = Router();
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   const { question, language, explanationMode } = req.body as AssistantRequest;
 
   // Simple dependency-free validation
@@ -24,11 +24,16 @@ router.post('/', (req, res) => {
     return res.status(400).json({ error: "Invalid assistant request: explanationMode is missing or unsupported." });
   }
 
-  const shellResponse = createAssistantShellResponse({
-    request: { question, language, explanationMode }
-  });
+  try {
+    const shellResponse = await orchestrateAssistantResponse({
+      request: { question, language, explanationMode }
+    });
 
-  res.json(shellResponse);
+    res.json(shellResponse);
+  } catch (error) {
+    res.status(500).json({ error: "Internal assistant error" });
+  }
 });
 
 export default router;
+
