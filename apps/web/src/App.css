@@ -325,3 +325,29 @@ textarea:focus, select:focus {
   margin-bottom: 0.5rem;
 }
 
+.assistant-card {
+  border-left: 4px solid #4f46e5;
+}
+
+.safety-note {
+  background-color: #eff6ff;
+  color: #1e40af;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #bfdbfe;
+}
+
+.safety-note p {
+  margin: 0;
+  color: #1e40af;
+}
+
+.assistant-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+
