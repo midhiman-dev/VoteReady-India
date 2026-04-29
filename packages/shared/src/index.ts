@@ -17,4 +17,6 @@ export * from "./api";
 export * from "./options";
 export * from "./mockAssistantFixtures";
 export * from "./assistantShellFixtures";
+export * from "./sourceFragments";
+export * from "./sourceFragmentFixtures";
 
