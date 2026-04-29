@@ -43,4 +43,48 @@ describe('orchestrateAssistantResponse', () => {
       expect(fullAnswerText.toLowerCase()).not.toContain(term.toLowerCase());
     }
   });
+
+  it('should return a shorter response for quick mode', async () => {
+    const request: AssistantRequest = {
+      question: 'Can VoteReady India answer questions yet?',
+      language: 'simple_english',
+      explanationMode: 'quick',
+    };
+
+    const response = await orchestrateAssistantResponse({ request });
+
+    expect(response.explanationMode).toBe('quick');
+    expect(response.answerBlocks.length).toBe(1);
+    expect(response.answerBlocks[0].type).toBe('short_answer');
+    
+    const fullAnswerText = response.answerBlocks.map((b) => b.content).join(' ');
+    expect(fullAnswerText).toContain('endpoint is connected');
+    expect(fullAnswerText).toContain('Current election guidance is not active');
+    expect(fullAnswerText).not.toContain('curated fragments');
+  });
+
+  it('should return multiple structured blocks for detailed mode', async () => {
+    const request: AssistantRequest = {
+      question: 'Can VoteReady India answer questions yet?',
+      language: 'simple_english',
+      explanationMode: 'detailed',
+    };
+
+    const response = await orchestrateAssistantResponse({ request });
+
+    expect(response.explanationMode).toBe('detailed');
+    expect(response.answerBlocks.length).toBe(4);
+    
+    const types = response.answerBlocks.map(b => b.type);
+    expect(types).toContain('short_answer');
+    expect(types).toContain('source_note');
+    expect(types).toContain('what_this_means');
+    expect(types).toContain('next_steps');
+
+    const fullAnswerText = response.answerBlocks.map((b) => b.content).join(' ');
+    expect(fullAnswerText).toContain('Current status');
+    expect(fullAnswerText).toContain('Source transparency');
+    expect(fullAnswerText).toContain('What this means');
+    expect(fullAnswerText).toContain('What comes next');
+  });
 });

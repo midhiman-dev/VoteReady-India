@@ -18,19 +18,12 @@ export async function orchestrateAssistantResponse(params: {
   // 2. Gemini readiness/config placeholder
   // const _isGeminiReady = false; 
 
-  // 3. Response shaping placeholder
+  // 3. Response shaping
   const response = createAssistantShellResponse({
     request,
-    generatedAt
+    generatedAt,
+    sourceCount: groundingContext.status === 'demo_safe' ? groundingContext.sourceCount : undefined
   });
-
-  // Update response to use the source-grounding context
-  if (groundingContext.status === 'demo_safe') {
-    response.answerBlocks.push({
-      type: 'neutral_refusal',
-      content: `Safe demo source-transparency context includes ${groundingContext.sourceCount} curated fragments. These fragments are not procedural guidance. Current election guidance is not active yet.`
-    });
-  }
 
   return response;
 }
