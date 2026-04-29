@@ -146,8 +146,20 @@ describe('API Routes', () => {
       const fullAnswerText = response.body.answerBlocks.map((b: any) => b.content).join(' ');
       expect(fullAnswerText).toContain('endpoint is connected');
       expect(fullAnswerText).toContain('source-backed election guidance is not active');
-      expect(fullAnswerText).not.toContain('eligible');
-      expect(fullAnswerText).not.toContain('deadline');
+      expect(fullAnswerText).toContain('curated fragments');
+
+      const forbiddenTerms = [
+        'deadline', 
+        'Form 6', 
+        'eligible', 
+        'eligibility', 
+        'polling date', 
+        'register by', 
+        'voter ID required'
+      ];
+      for (const term of forbiddenTerms) {
+        expect(fullAnswerText.toLowerCase()).not.toContain(term.toLowerCase());
+      }
     });
 
     it('should return 400 for empty request body', async () => {

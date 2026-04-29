@@ -1,8 +1,8 @@
-import { 
-  AssistantRequest, 
+import {
+  AssistantRequest,
   AssistantResponse,
   IsoDateTimeString,
-  createAssistantShellResponse 
+  createAssistantShellResponse
 } from '@voteready/shared';
 import { getSourceGroundingContext } from './sourceGrounding.js';
 
@@ -11,19 +11,26 @@ export async function orchestrateAssistantResponse(params: {
   generatedAt?: IsoDateTimeString;
 }): Promise<AssistantResponse> {
   const { request, generatedAt } = params;
-  
-  // Future orchestration steps will plug in here:
+
   // 1. Source context lookup
-  const _groundingContext = await getSourceGroundingContext();
-  
+  const groundingContext = await getSourceGroundingContext();
+
   // 2. Gemini readiness/config placeholder
   // const _isGeminiReady = false; 
-  
+
   // 3. Response shaping placeholder
-  
-  // For now, return the current safe shell response.
-  return createAssistantShellResponse({
+  const response = createAssistantShellResponse({
     request,
     generatedAt
   });
+
+  // Update response to use the source-grounding context
+  if (groundingContext.status === 'demo_safe') {
+    response.answerBlocks.push({
+      type: 'neutral_refusal',
+      content: `Safe demo source-transparency context includes ${groundingContext.sourceCount} curated fragments. These fragments are not procedural guidance. Current election guidance is not active yet.`
+    });
+  }
+
+  return response;
 }
