@@ -6,28 +6,56 @@ import {
   ExplanationMode,
   SUPPORTED_LANGUAGES,
   SUPPORTED_EXPLANATION_MODES,
+  SavedGuidanceItem,
 } from '@voteready/shared';
 import { postAssistantRequest } from '../lib/apiClient';
 import AssistantResponsePreview from './AssistantResponsePreview';
+import { saveGuidanceItem } from '../lib/savedGuidanceStorage';
 
 function formatOptionLabel(val: string): string {
   return val.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 }
 
-export default function AssistantShell() {
+interface AssistantShellProps {
+  onItemSaved?: () => void;
+}
+
+export default function AssistantShell({ onItemSaved }: AssistantShellProps) {
   const [question, setQuestion] = useState('Can VoteReady India answer questions yet?');
   const [language, setLanguage] = useState<LanguagePreference>('simple_english');
   const [explanationMode, setExplanationMode] = useState<ExplanationMode>('simple');
   
   const [response, setResponse] = useState<AssistantResponse | null>(null);
+  const [isSaved, setIsSaved] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const handleSave = () => {
+    if (!response) return;
+
+    const item: SavedGuidanceItem = {
+      id: response.id,
+      question,
+      responseStatus: response.status,
+      language: response.language,
+      explanationMode: response.explanationMode,
+      savedTimestamp: new Date().toISOString(),
+      shortSummary: response.answerBlocks.find(b => b.type === 'short_answer')?.content.substring(0, 100) + '...' || 'No summary available',
+      sourceCount: response.sources.length,
+      localOnlyMarker: true
+    };
+
+    saveGuidanceItem(item);
+    setIsSaved(true);
+    if (onItemSaved) onItemSaved();
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
     setResponse(null);
+    setIsSaved(false);
 
     const request: AssistantRequest = {
       question,
@@ -111,7 +139,16 @@ export default function AssistantShell() {
 
       {response && (
         <div className="response-section">
-          <h3>Response</h3>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+            <h3 style={{ margin: 0 }}>Response</h3>
+            {!isSaved ? (
+              <button onClick={handleSave} className="save-btn" style={{ padding: '0.25rem 0.75rem', fontSize: '0.8rem', cursor: 'pointer' }}>
+                Save Locally
+              </button>
+            ) : (
+              <span style={{ fontSize: '0.8rem', color: '#27ae60', fontWeight: 'bold' }}>✓ Saved locally</span>
+            )}
+          </div>
           <AssistantResponsePreview response={response} />
         </div>
       )}

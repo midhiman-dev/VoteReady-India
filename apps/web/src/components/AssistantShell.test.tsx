@@ -9,6 +9,13 @@ vi.mock('../lib/apiClient', () => ({
   postAssistantRequest: vi.fn(),
 }));
 
+// Mock the storage
+vi.mock('../lib/savedGuidanceStorage', () => ({
+  saveGuidanceItem: vi.fn(),
+}));
+
+import { saveGuidanceItem } from '../lib/savedGuidanceStorage';
+
 describe('AssistantShell', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -93,5 +100,40 @@ describe('AssistantShell', () => {
     await waitFor(() => {
       expect(screen.getByText(/network error/i)).toBeInTheDocument();
     });
+  });
+
+  it('saves an assistant response locally when Save button is clicked', async () => {
+    const mockResponse: AssistantResponse = {
+      id: 'assistant-resp-456',
+      status: 'answered',
+      language: 'simple_english',
+      explanationMode: 'simple',
+      answerBlocks: [
+        {
+          type: 'short_answer',
+          content: 'This is a short answer.',
+        },
+      ],
+      sources: [],
+      generatedAt: '2026-04-28T00:00:00Z',
+    };
+
+    vi.mocked(postAssistantRequest).mockResolvedValueOnce(mockResponse);
+
+    render(<AssistantShell />);
+    
+    // Submit to get response
+    fireEvent.click(screen.getByRole('button', { name: /ask assistant/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText('This is a short answer.')).toBeInTheDocument();
+    });
+
+    // Click Save
+    const saveBtn = screen.getByRole('button', { name: /save locally/i });
+    fireEvent.click(saveBtn);
+
+    expect(saveGuidanceItem).toHaveBeenCalled();
+    expect(screen.getByText(/✓ saved locally/i)).toBeInTheDocument();
   });
 });

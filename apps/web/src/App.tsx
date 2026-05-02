@@ -6,13 +6,19 @@ import SourceRegistryPreview from './components/SourceRegistryPreview'
 import AssistantShell from './components/AssistantShell'
 import { GuidedJourneyChooser } from './components/GuidedJourneyChooser'
 import { ElectionBasicsExplainer } from './components/ElectionBasicsExplainer'
+import { SavedGuidancePanel } from './components/SavedGuidancePanel'
 import './App.css'
 
 function App() {
   const [metadata, setMetadata] = useState<AppMetadataResponse | null>(null)
   const [registry, setRegistry] = useState<SourceRegistryResponse | null>(null)
+  const [refreshTrigger, setRefreshTrigger] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+
+  const handleRefresh = () => {
+    setRefreshTrigger(prev => prev + 1)
+  }
 
   useEffect(() => {
     async function fetchData() {
@@ -60,7 +66,9 @@ function App() {
 
         {!loading && !error && metadata && registry && (
           <div className="content-container">
-            <AssistantShell />
+            <AssistantShell onItemSaved={handleRefresh} />
+
+            <SavedGuidancePanel refreshTrigger={refreshTrigger} onItemRemoved={handleRefresh} />
 
             <GuidedJourneyChooser />
 
