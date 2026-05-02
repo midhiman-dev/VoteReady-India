@@ -23,4 +23,5 @@ export * from "./sourceFragmentFixtures";
 export * from "./guidedJourneys";
 export * from "./electionBasics";
 export * from "./savedGuidance";
+export * from "./reminderPreferences";
 
