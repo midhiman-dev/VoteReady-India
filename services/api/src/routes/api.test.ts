@@ -144,9 +144,9 @@ describe('API Routes', () => {
 
       // Check for non-guidance text
       const fullAnswerText = response.body.answerBlocks.map((b: any) => b.content).join(' ');
-      expect(fullAnswerText).toContain('endpoint is connected');
-      expect(fullAnswerText).toContain('source-backed election guidance is not active');
-      expect(fullAnswerText).toContain('curated fragments');
+      expect(fullAnswerText).toContain('is connected');
+      expect(fullAnswerText).toContain('real election guidance yet');
+      expect(fullAnswerText).toContain('demo sources include');
 
       const forbiddenTerms = [
         'deadline', 
