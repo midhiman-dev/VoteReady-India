@@ -5,6 +5,7 @@ import {
   createAssistantShellResponse
 } from '@voteready/shared';
 import { getSourceGroundingContext } from './sourceGrounding.js';
+import { classifyAssistantRequest } from './requestSafety.js';
 
 export async function orchestrateAssistantResponse(params: {
   request: AssistantRequest;
@@ -12,18 +13,27 @@ export async function orchestrateAssistantResponse(params: {
 }): Promise<AssistantResponse> {
   const { request, generatedAt } = params;
 
-  // 1. Source context lookup
+  // 1. Classification
+  const safetyCategory = classifyAssistantRequest(request.question);
+
+  // 2. Source context lookup
   const groundingContext = await getSourceGroundingContext();
 
-  // 2. Gemini readiness/config placeholder
-  // const _isGeminiReady = false; 
+  // 3. Status mapping
+  let status: "answered" | "cannot_verify" | "out_of_scope" = "answered";
+  if (safetyCategory === "cannot_verify_procedural") {
+    status = "cannot_verify";
+  } else if (safetyCategory === "neutral_refusal_political") {
+    status = "out_of_scope";
+  }
 
-  // 3. Response shaping
+  // 4. Response shaping
   const response = createAssistantShellResponse({
     request,
     generatedAt,
     sourceCount: groundingContext.status === 'demo_safe' ? groundingContext.sourceCount : undefined,
-    sources: groundingContext.status === 'demo_safe' ? groundingContext.sources : []
+    sources: status === 'out_of_scope' ? [] : (groundingContext.status === 'demo_safe' ? groundingContext.sources : []),
+    status
   });
 
   return response;

@@ -1,7 +1,8 @@
 import { 
   AssistantRequest, 
   AssistantResponse,
-  AssistantAnswerBlock
+  AssistantAnswerBlock,
+  AssistantAnswerStatus
 } from "./assistant";
 import { SourceRecord } from "./source";
 import { IsoDateTimeString, LanguagePreference } from "./common";
@@ -27,8 +28,9 @@ export function createAssistantShellResponse(params: {
   generatedAt?: IsoDateTimeString;
   sourceCount?: number;
   sources?: SourceRecord[];
+  status?: AssistantAnswerStatus;
 }): AssistantResponse {
-  const { request, generatedAt, sourceCount, sources = [] } = params;
+  const { request, generatedAt, sourceCount, sources = [], status = "answered" } = params;
   const timestamp = generatedAt || new Date().toISOString();
 
   // Fallback to english if the requested language is unsupported for some reason
@@ -36,7 +38,21 @@ export function createAssistantShellResponse(params: {
 
   let answerBlocks: AssistantAnswerBlock[] = [];
 
-  if (request.explanationMode === 'quick') {
+  if (status === 'cannot_verify') {
+    answerBlocks = [
+      {
+        type: "short_answer" as const,
+        content: languageCopy.cannot_verify_short_answer
+      }
+    ];
+  } else if (status === 'out_of_scope') {
+    answerBlocks = [
+      {
+        type: "short_answer" as const,
+        content: languageCopy.out_of_scope_short_answer
+      }
+    ];
+  } else if (request.explanationMode === 'quick') {
     answerBlocks = [
       {
         type: "short_answer" as const,
@@ -86,7 +102,7 @@ export function createAssistantShellResponse(params: {
 
   return {
     id: `shell-${timestamp}`,
-    status: "cannot_verify",
+    status,
     language: request.language,
     explanationMode: request.explanationMode,
     answerBlocks,
