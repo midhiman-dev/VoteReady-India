@@ -22,4 +22,5 @@ export * from "./sourceFragments";
 export * from "./sourceFragmentFixtures";
 export * from "./guidedJourneys";
 export * from "./electionBasics";
+export * from "./savedGuidance";
 
