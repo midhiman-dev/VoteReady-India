@@ -134,7 +134,7 @@ describe('API Routes', () => {
 
       expect(response.status).toBe(200);
       expect(response.body.id).toBeDefined();
-      expect(response.body.status).toBe('cannot_verify');
+      expect(response.body.status).toBe('answered');
       expect(response.body.language).toBe(validRequest.language);
       expect(response.body.explanationMode).toBe(validRequest.explanationMode);
       expect(response.body.answerBlocks).toBeInstanceOf(Array);
@@ -163,6 +163,42 @@ describe('API Routes', () => {
       }
     });
 
+    it('should return cannot_verify response for procedural question', async () => {
+      const proceduralRequest = {
+        question: "How do I register to vote?",
+        language: "simple_english",
+        explanationMode: "simple"
+      };
+
+      const response = await request(app)
+        .post('/assistant')
+        .send(proceduralRequest)
+        .set('Content-Type', 'application/json');
+
+      expect(response.status).toBe(200);
+      expect(response.body.status).toBe('cannot_verify');
+      expect(response.body.answerBlocks[0].content).toContain('cannot verify real guidance');
+      expect(response.body.sources.length).toBeGreaterThan(0);
+    });
+
+    it('should return out_of_scope response for political question', async () => {
+      const politicalRequest = {
+        question: "Which party should I vote for?",
+        language: "simple_english",
+        explanationMode: "simple"
+      };
+
+      const response = await request(app)
+        .post('/assistant')
+        .send(politicalRequest)
+        .set('Content-Type', 'application/json');
+
+      expect(response.status).toBe(200);
+      expect(response.body.status).toBe('out_of_scope');
+      expect(response.body.answerBlocks[0].content).toContain('cannot recommend a candidate');
+      expect(response.body.sources.length).toBe(0);
+    });
+
     it('should return quick safe shell response', async () => {
       const quickRequest = {
         question: "Can VoteReady India answer questions yet?",
@@ -176,6 +212,7 @@ describe('API Routes', () => {
         .set('Content-Type', 'application/json');
 
       expect(response.status).toBe(200);
+      expect(response.body.status).toBe('answered');
       expect(response.body.explanationMode).toBe('quick');
       expect(response.body.answerBlocks.length).toBe(1);
     });
@@ -193,6 +230,7 @@ describe('API Routes', () => {
         .set('Content-Type', 'application/json');
 
       expect(response.status).toBe(200);
+      expect(response.body.status).toBe('answered');
       expect(response.body.explanationMode).toBe('detailed');
       expect(response.body.answerBlocks.length).toBe(4);
     });

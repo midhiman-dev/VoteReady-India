@@ -10,7 +10,9 @@ export const ASSISTANT_LANGUAGE_COPY = {
     detailed_source_note_with_count: (count: number) => `Source transparency: Safe demo source-transparency context includes ${count} curated fragments. These fragments are not procedural guidance.`,
     detailed_source_note_no_count: "Source transparency: Safe demo source-transparency context is available. These fragments are not procedural guidance.",
     disclaimer: "Real source-backed election guidance is not active yet.",
-    source_pending_message: "This endpoint does not yet use Gemini or verified source retrieval."
+    source_pending_message: "This endpoint does not yet use Gemini or verified source retrieval.",
+    cannot_verify_short_answer: "I can’t verify current procedural guidance for this question yet. VoteReady India has source metadata connected, but reviewed procedural answer content is not active.",
+    out_of_scope_short_answer: "I can explain election processes and official civic information, but I can’t recommend a candidate, party, or voting choice."
   },
   simple_english: {
     quick_short_answer: "VoteReady India is connected. It cannot give current election guidance yet.",
@@ -23,7 +25,9 @@ export const ASSISTANT_LANGUAGE_COPY = {
     detailed_source_note_with_count: (count: number) => `Sources: Safe demo sources include ${count} fragments. These are not real guidance.`,
     detailed_source_note_no_count: "Sources: Safe demo sources are available. These are not real guidance.",
     disclaimer: "Real election guidance is not active yet.",
-    source_pending_message: "This does not use Gemini or real sources yet."
+    source_pending_message: "This does not use Gemini or real sources yet.",
+    cannot_verify_short_answer: "I cannot verify real guidance for this question yet. Source metadata is connected, but the reviewed answers are not active.",
+    out_of_scope_short_answer: "I can explain official information, but I cannot recommend a candidate, party, or voting choice."
   },
   hinglish: {
     quick_short_answer: "VoteReady India assistant connected hai. Abhi current election guidance active nahi hai.",
@@ -36,7 +40,9 @@ export const ASSISTANT_LANGUAGE_COPY = {
     detailed_source_note_with_count: (count: number) => `Source transparency: Safe demo source-transparency context mein ${count} curated fragments hain. Yeh fragments procedural guidance nahi hain.`,
     detailed_source_note_no_count: "Source transparency: Safe demo source-transparency context available hai. Yeh fragments procedural guidance nahi hain.",
     disclaimer: "Real source-backed election guidance abhi active nahi hai.",
-    source_pending_message: "Yeh endpoint abhi Gemini ya verified source retrieval use nahi karta."
+    source_pending_message: "Yeh endpoint abhi Gemini ya verified source retrieval use nahi karta.",
+    cannot_verify_short_answer: "Main abhi is question ke liye procedural guidance verify nahi kar sakta. VoteReady India mein source metadata connected hai, par reviewed procedural answers abhi active nahi hain.",
+    out_of_scope_short_answer: "Main election processes aur official civic information explain kar sakta hoon, par main candidate, party, ya voting choice recommend nahi kar sakta."
   },
   hindi: {
     quick_short_answer: "VoteReady India सहायक जुड़ा हुआ है। वर्तमान चुनाव मार्गदर्शन अभी सक्रिय नहीं है।",
@@ -49,6 +55,8 @@ export const ASSISTANT_LANGUAGE_COPY = {
     detailed_source_note_with_count: (count: number) => `स्रोत पारदर्शिता: सुरक्षित डेमो स्रोत संदर्भ में ${count} क्यूरेटेड अंश शामिल हैं। ये अंश प्रक्रियात्मक मार्गदर्शन नहीं हैं।`,
     detailed_source_note_no_count: "स्रोत पारदर्शिता: सुरक्षित डेमो स्रोत संदर्भ उपलब्ध है। ये अंश प्रक्रियात्मक मार्गदर्शन नहीं हैं।",
     disclaimer: "वास्तविक चुनाव मार्गदर्शन अभी सक्रिय नहीं है।",
-    source_pending_message: "यह एंडपॉइंट अभी जेमिनी या सत्यापित स्रोत पुनर्प्राप्ति का उपयोग नहीं करता है।"
+    source_pending_message: "यह एंडपॉइंट अभी जेमिनी या सत्यापित स्रोत पुनर्प्राप्ति का उपयोग नहीं करता है।",
+    cannot_verify_short_answer: "मैं अभी इस प्रश्न के लिए प्रक्रियात्मक मार्गदर्शन सत्यापित नहीं कर सकता। वोटरेडी इंडिया में स्रोत मेटाडेटा जुड़ा हुआ है, लेकिन समीक्षा की गई प्रक्रियात्मक सामग्री अभी सक्रिय नहीं है।",
+    out_of_scope_short_answer: "मैं चुनाव प्रक्रियाओं और आधिकारिक नागरिक जानकारी की व्याख्या कर सकता हूँ, लेकिन मैं किसी उम्मीदवार, पार्टी या मतदान विकल्प की सिफारिश नहीं कर सकता।"
   }
 };
