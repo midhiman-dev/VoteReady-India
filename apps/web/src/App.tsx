@@ -5,6 +5,7 @@ import ApiStatusCard from './components/ApiStatusCard'
 import SourceRegistryPreview from './components/SourceRegistryPreview'
 import AssistantShell from './components/AssistantShell'
 import { GuidedJourneyChooser } from './components/GuidedJourneyChooser'
+import { ElectionBasicsExplainer } from './components/ElectionBasicsExplainer'
 import './App.css'
 
 function App() {
@@ -62,6 +63,8 @@ function App() {
             <AssistantShell />
 
             <GuidedJourneyChooser />
+
+            <ElectionBasicsExplainer />
 
             <div className="metadata-grid">
               <ApiStatusCard metadata={metadata} />

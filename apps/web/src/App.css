@@ -586,3 +586,83 @@ textarea:focus, select:focus {
   font-size: 0.95rem;
   line-height: 1.5;
 }
+
+/* Election Basics Explainer Styles */
+.election-basics-explainer {
+  padding: 2rem;
+  background-color: #f0fdf4;
+  border-radius: 16px;
+  border: 1px solid #dcfce7;
+  margin-bottom: 2rem;
+}
+
+.election-basics-explainer h2 {
+  margin-top: 0;
+  color: #166534;
+  font-size: 1.75rem;
+}
+
+.explainer-safety {
+  margin-bottom: 2rem;
+  border-left: 4px solid #10b981;
+}
+
+.topic-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+
+.topic-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #dcfce7;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+}
+
+.topic-card:hover {
+  transform: translateY(-4px);
+  border-color: #10b981;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+}
+
+.topic-card h3 {
+  margin: 0 0 0.75rem 0;
+  font-size: 1.1rem;
+  color: #064e3b;
+}
+
+.topic-card p {
+  margin: 0 0 1rem 0;
+  font-size: 0.9rem;
+  color: #374151;
+  line-height: 1.4;
+}
+
+.election-basics-detail {
+  padding: 2rem;
+  background: white;
+  border-radius: 16px;
+  border: 1px solid #dcfce7;
+  margin-bottom: 2rem;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.placeholder-content {
+  padding: 1.5rem;
+  background: #f9fafb;
+  border-radius: 12px;
+  border: 1px dashed #d1d5db;
+}
+
+.internal-note {
+  margin-top: 2rem;
+  font-size: 0.85rem;
+  color: #6b7280;
+}
