@@ -4,6 +4,7 @@ import { getAppMetadata, getSourceRegistry } from './lib/apiClient'
 import ApiStatusCard from './components/ApiStatusCard'
 import SourceRegistryPreview from './components/SourceRegistryPreview'
 import AssistantShell from './components/AssistantShell'
+import { GuidedJourneyChooser } from './components/GuidedJourneyChooser'
 import './App.css'
 
 function App() {
@@ -59,6 +60,8 @@ function App() {
         {!loading && !error && metadata && registry && (
           <div className="content-container">
             <AssistantShell />
+
+            <GuidedJourneyChooser />
 
             <div className="metadata-grid">
               <ApiStatusCard metadata={metadata} />
