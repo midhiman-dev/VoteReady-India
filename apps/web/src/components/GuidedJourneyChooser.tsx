@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { GUIDED_JOURNEY_SUMMARIES, GuidedJourneySummary } from "@voteready/shared";
+import { GuidedJourneyDetail } from "./GuidedJourneyDetail";
 import { GUIDED_JOURNEY_SUMMARIES, GuidedJourneyId, GuidedJourneySummary } from "@voteready/shared";
 
 export const GuidedJourneyChooser: React.FC = () => {
@@ -13,6 +15,7 @@ export const GuidedJourneyChooser: React.FC = () => {
   };
 
   if (selectedJourney) {
+    return <GuidedJourneyDetail journey={selectedJourney} onBack={handleBack} />;
     return (
       <div className="guided-journey-details" id="guided-journey-placeholder">
         <button onClick={handleBack} className="back-button">← Back to Journeys</button>
