@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { GUIDED_JOURNEY_SUMMARIES, GuidedJourneyId, GuidedJourneySummary } from "@voteready/shared";
+import { GUIDED_JOURNEY_SUMMARIES, GuidedJourneySummary } from "@voteready/shared";
+import { GuidedJourneyDetail } from "./GuidedJourneyDetail";
 
 export const GuidedJourneyChooser: React.FC = () => {
   const [selectedJourney, setSelectedJourney] = useState<GuidedJourneySummary | null>(null);
@@ -13,23 +14,7 @@ export const GuidedJourneyChooser: React.FC = () => {
   };
 
   if (selectedJourney) {
-    return (
-      <div className="guided-journey-details" id="guided-journey-placeholder">
-        <button onClick={handleBack} className="back-button">← Back to Journeys</button>
-        <h3>{selectedJourney.title}</h3>
-        <div className="placeholder-panel">
-          <p><strong>Status:</strong> {selectedJourney.status.replace(/_/g, " ")}</p>
-          <div className="safety-note-box">
-            <p className="safety-note">
-              Verified source-backed journey guidance is not active yet.
-            </p>
-            <p className="safety-detail">
-              This journey is not active yet. Future tasks will connect reviewed source content before showing step-by-step guidance.
-            </p>
-          </div>
-        </div>
-      </div>
-    );
+    return <GuidedJourneyDetail journey={selectedJourney} onBack={handleBack} />;
   }
 
   return (
