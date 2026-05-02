@@ -1,7 +1,7 @@
 # Task 021 — Add Language Preference Handling for English, Simple English, Hinglish, and Hindi
 
 ## Status
-In Progress
+Completed
 
 ## Branch
 feat/language-preference-behavior-task-021
