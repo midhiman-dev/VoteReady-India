@@ -20,4 +20,5 @@ export * from "./assistantShellFixtures";
 export * from "./assistantLanguageCopy";
 export * from "./sourceFragments";
 export * from "./sourceFragmentFixtures";
+export * from "./guidedJourneys";
 
