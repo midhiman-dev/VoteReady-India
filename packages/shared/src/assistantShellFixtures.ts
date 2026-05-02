@@ -3,7 +3,8 @@ import {
   AssistantResponse,
   AssistantAnswerBlock
 } from "./assistant";
-import { IsoDateTimeString } from "./common";
+import { IsoDateTimeString, LanguagePreference } from "./common";
+import { ASSISTANT_LANGUAGE_COPY } from "./assistantLanguageCopy";
 
 /**
  * Shared assistant shell fixtures for the real assistant endpoint.
@@ -28,32 +29,35 @@ export function createAssistantShellResponse(params: {
   const { request, generatedAt, sourceCount } = params;
   const timestamp = generatedAt || new Date().toISOString();
 
+  // Fallback to english if the requested language is unsupported for some reason
+  const languageCopy = ASSISTANT_LANGUAGE_COPY[request.language as LanguagePreference] || ASSISTANT_LANGUAGE_COPY.english;
+
   let answerBlocks: AssistantAnswerBlock[] = [];
 
   if (request.explanationMode === 'quick') {
     answerBlocks = [
       {
         type: "short_answer" as const,
-        content: "VoteReady India’s assistant endpoint is connected. Current election guidance is not active yet."
+        content: languageCopy.quick_short_answer
       }
     ];
   } else if (request.explanationMode === 'detailed') {
     answerBlocks = [
       {
         type: "short_answer" as const,
-        content: "Current status: This endpoint is ready for future source-grounded orchestration, but it does not yet generate election guidance."
+        content: languageCopy.detailed_short_answer
       },
       {
         type: "source_note" as const,
-        content: `Source transparency: Safe demo source-transparency context ${sourceCount !== undefined ? `includes ${sourceCount} curated fragments` : 'is available'}. These fragments are not procedural guidance.`
+        content: sourceCount !== undefined ? languageCopy.detailed_source_note_with_count(sourceCount) : languageCopy.detailed_source_note_no_count
       },
       {
         type: "what_this_means" as const,
-        content: "What this means: Real source-backed election guidance is not active yet. All responses are currently limited to safe system confirmations."
+        content: languageCopy.detailed_what_this_means
       },
       {
         type: "next_steps" as const,
-        content: "What comes next: Future updates will integrate Gemini models and real-time source retrieval."
+        content: languageCopy.detailed_next_steps
       }
     ];
   } else {
@@ -61,19 +65,19 @@ export function createAssistantShellResponse(params: {
     answerBlocks = [
       {
         type: "short_answer" as const,
-        content: "VoteReady India’s assistant endpoint is connected, but real source-backed election guidance is not active yet."
+        content: languageCopy.simple_short_answer
       }
     ];
     
     if (sourceCount !== undefined) {
       answerBlocks.push({
         type: "source_note" as const,
-        content: `Safe demo source-transparency context includes ${sourceCount} curated fragments. These fragments are not procedural guidance.`
+        content: languageCopy.source_note_with_count(sourceCount)
       });
     } else {
       answerBlocks.push({
         type: "source_note" as const,
-        content: "Safe demo source-transparency context is available. These fragments are not procedural guidance."
+        content: languageCopy.source_note_no_count
       });
     }
   }
@@ -88,8 +92,8 @@ export function createAssistantShellResponse(params: {
     generatedAt: timestamp,
     freshnessSummary: {
       status: "review_due",
-      message: ASSISTANT_SHELL_SOURCE_PENDING_MESSAGE
+      message: languageCopy.source_pending_message
     },
-    disclaimer: ASSISTANT_SHELL_DISCLAIMER
+    disclaimer: languageCopy.disclaimer
   };
 }

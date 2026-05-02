@@ -1,0 +1,54 @@
+export const ASSISTANT_LANGUAGE_COPY = {
+  english: {
+    quick_short_answer: "VoteReady India’s assistant endpoint is connected. Current election guidance is not active yet.",
+    simple_short_answer: "VoteReady India’s assistant endpoint is connected, but real source-backed election guidance is not active yet.",
+    detailed_short_answer: "Current status: This endpoint is ready for future source-grounded orchestration, but it does not yet generate election guidance.",
+    detailed_what_this_means: "What this means: Real source-backed election guidance is not active yet. All responses are currently limited to safe system confirmations.",
+    detailed_next_steps: "What comes next: Future updates will integrate Gemini models and real-time source retrieval.",
+    source_note_with_count: (count: number) => `Safe demo source-transparency context includes ${count} curated fragments. These fragments are not procedural guidance.`,
+    source_note_no_count: "Safe demo source-transparency context is available. These fragments are not procedural guidance.",
+    detailed_source_note_with_count: (count: number) => `Source transparency: Safe demo source-transparency context includes ${count} curated fragments. These fragments are not procedural guidance.`,
+    detailed_source_note_no_count: "Source transparency: Safe demo source-transparency context is available. These fragments are not procedural guidance.",
+    disclaimer: "Real source-backed election guidance is not active yet.",
+    source_pending_message: "This endpoint does not yet use Gemini or verified source retrieval."
+  },
+  simple_english: {
+    quick_short_answer: "VoteReady India is connected. It cannot give current election guidance yet.",
+    simple_short_answer: "VoteReady India is connected. It cannot give real election guidance yet.",
+    detailed_short_answer: "Status: The system is ready but cannot give election guidance yet.",
+    detailed_what_this_means: "What this means: Real election guidance is not active. We can only give safe system messages right now.",
+    detailed_next_steps: "Next steps: Future updates will add Gemini and real sources.",
+    source_note_with_count: (count: number) => `Safe demo sources include ${count} fragments. These are not real guidance.`,
+    source_note_no_count: "Safe demo sources are available. These are not real guidance.",
+    detailed_source_note_with_count: (count: number) => `Sources: Safe demo sources include ${count} fragments. These are not real guidance.`,
+    detailed_source_note_no_count: "Sources: Safe demo sources are available. These are not real guidance.",
+    disclaimer: "Real election guidance is not active yet.",
+    source_pending_message: "This does not use Gemini or real sources yet."
+  },
+  hinglish: {
+    quick_short_answer: "VoteReady India assistant connected hai. Abhi current election guidance active nahi hai.",
+    simple_short_answer: "VoteReady India assistant connected hai, par real source-backed election guidance abhi active nahi hai.",
+    detailed_short_answer: "Current status: Yeh endpoint future source-grounded orchestration ke liye ready hai, par abhi election guidance generate nahi karta.",
+    detailed_what_this_means: "Iska matlab: Real source-backed election guidance abhi active nahi hai. Sabhi responses abhi safe system confirmations tak limited hain.",
+    detailed_next_steps: "Aage kya hoga: Future updates mein Gemini models aur real-time source retrieval integrate kiya jayega.",
+    source_note_with_count: (count: number) => `Safe demo source-transparency context mein ${count} curated fragments hain. Yeh fragments procedural guidance nahi hain.`,
+    source_note_no_count: "Safe demo source-transparency context available hai. Yeh fragments procedural guidance nahi hain.",
+    detailed_source_note_with_count: (count: number) => `Source transparency: Safe demo source-transparency context mein ${count} curated fragments hain. Yeh fragments procedural guidance nahi hain.`,
+    detailed_source_note_no_count: "Source transparency: Safe demo source-transparency context available hai. Yeh fragments procedural guidance nahi hain.",
+    disclaimer: "Real source-backed election guidance abhi active nahi hai.",
+    source_pending_message: "Yeh endpoint abhi Gemini ya verified source retrieval use nahi karta."
+  },
+  hindi: {
+    quick_short_answer: "VoteReady India सहायक जुड़ा हुआ है। वर्तमान चुनाव मार्गदर्शन अभी सक्रिय नहीं है।",
+    simple_short_answer: "VoteReady India सहायक जुड़ा हुआ है, लेकिन वास्तविक चुनाव मार्गदर्शन अभी सक्रिय नहीं है।",
+    detailed_short_answer: "वर्तमान स्थिति: यह एंडपॉइंट भविष्य के स्रोत-आधारित ऑर्केस्ट्रेशन के लिए तैयार है, लेकिन यह अभी चुनाव मार्गदर्शन उत्पन्न नहीं करता है।",
+    detailed_what_this_means: "इसका अर्थ है: वास्तविक चुनाव मार्गदर्शन अभी सक्रिय नहीं है। सभी प्रतिक्रियाएं वर्तमान में सुरक्षित सिस्टम पुष्टिकरण तक सीमित हैं।",
+    detailed_next_steps: "आगे क्या: भविष्य के अपडेट में जेमिनी मॉडल और रीयल-टाइम स्रोत पुनर्प्राप्ति को एकीकृत किया जाएगा।",
+    source_note_with_count: (count: number) => `सुरक्षित डेमो स्रोत संदर्भ में ${count} क्यूरेटेड अंश शामिल हैं। ये अंश प्रक्रियात्मक मार्गदर्शन नहीं हैं।`,
+    source_note_no_count: "सुरक्षित डेमो स्रोत संदर्भ उपलब्ध है। ये अंश प्रक्रियात्मक मार्गदर्शन नहीं हैं।",
+    detailed_source_note_with_count: (count: number) => `स्रोत पारदर्शिता: सुरक्षित डेमो स्रोत संदर्भ में ${count} क्यूरेटेड अंश शामिल हैं। ये अंश प्रक्रियात्मक मार्गदर्शन नहीं हैं।`,
+    detailed_source_note_no_count: "स्रोत पारदर्शिता: सुरक्षित डेमो स्रोत संदर्भ उपलब्ध है। ये अंश प्रक्रियात्मक मार्गदर्शन नहीं हैं।",
+    disclaimer: "वास्तविक चुनाव मार्गदर्शन अभी सक्रिय नहीं है।",
+    source_pending_message: "यह एंडपॉइंट अभी जेमिनी या सत्यापित स्रोत पुनर्प्राप्ति का उपयोग नहीं करता है।"
+  }
+};

@@ -23,11 +23,11 @@ describe('orchestrateAssistantResponse', () => {
 
     // Check for safe shell messaging
     const fullAnswerText = response.answerBlocks.map((b) => b.content).join(' ');
-    expect(fullAnswerText).toContain('endpoint is connected');
-    expect(fullAnswerText).toContain('source-backed election guidance is not active');
+    expect(fullAnswerText).toContain('is connected');
+    expect(fullAnswerText).toContain('real election guidance yet');
     
     // Check that curated demo fragment context is used
-    expect(fullAnswerText).toContain('curated fragments');
+    expect(fullAnswerText).toContain('demo sources include');
 
     // Check that it does not include procedural guidance terms
     const forbiddenTerms = [
@@ -58,9 +58,9 @@ describe('orchestrateAssistantResponse', () => {
     expect(response.answerBlocks[0].type).toBe('short_answer');
     
     const fullAnswerText = response.answerBlocks.map((b) => b.content).join(' ');
-    expect(fullAnswerText).toContain('endpoint is connected');
-    expect(fullAnswerText).toContain('Current election guidance is not active');
-    expect(fullAnswerText).not.toContain('curated fragments');
+    expect(fullAnswerText).toContain('is connected');
+    expect(fullAnswerText).toContain('cannot give current election guidance yet');
+    expect(fullAnswerText).not.toContain('demo sources include');
   });
 
   it('should return multiple structured blocks for detailed mode', async () => {
@@ -82,9 +82,9 @@ describe('orchestrateAssistantResponse', () => {
     expect(types).toContain('next_steps');
 
     const fullAnswerText = response.answerBlocks.map((b) => b.content).join(' ');
-    expect(fullAnswerText).toContain('Current status');
-    expect(fullAnswerText).toContain('Source transparency');
-    expect(fullAnswerText).toContain('What this means');
-    expect(fullAnswerText).toContain('What comes next');
+    expect(fullAnswerText).toContain('Status:');
+    expect(fullAnswerText).toContain('Sources:');
+    expect(fullAnswerText).toContain('What this means:');
+    expect(fullAnswerText).toContain('Next steps:');
   });
 });
