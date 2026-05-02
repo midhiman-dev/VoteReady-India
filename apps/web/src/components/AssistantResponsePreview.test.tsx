@@ -53,4 +53,27 @@ describe('AssistantResponsePreview', () => {
     render(<AssistantResponsePreview response={mockResponse} />);
     expect(screen.getByText('Sources returned: 0')).toBeInTheDocument();
   });
+
+  it('renders source cards when sources are present', () => {
+    const responseWithSources: AssistantResponse = {
+      ...mockResponse,
+      sources: [
+        {
+          id: 'source-1',
+          title: 'Test Source',
+          sourceType: 'eci_official',
+          jurisdictionLevel: 'national',
+          freshnessStatus: 'review_due',
+          publisher: 'ECI'
+        }
+      ]
+    };
+
+    render(<AssistantResponsePreview response={responseWithSources} />);
+    expect(screen.getByText('Sources returned: 1')).toBeInTheDocument();
+    expect(screen.getByText('Source Metadata')).toBeInTheDocument();
+    expect(screen.getByText('Test Source')).toBeInTheDocument();
+    expect(screen.getByText('Review due')).toBeInTheDocument();
+    expect(screen.getByText('Source metadata only. These records are not verified procedural guidance yet.')).toBeInTheDocument();
+  });
 });

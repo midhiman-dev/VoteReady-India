@@ -22,7 +22,8 @@ export async function orchestrateAssistantResponse(params: {
   const response = createAssistantShellResponse({
     request,
     generatedAt,
-    sourceCount: groundingContext.status === 'demo_safe' ? groundingContext.sourceCount : undefined
+    sourceCount: groundingContext.status === 'demo_safe' ? groundingContext.sourceCount : undefined,
+    sources: groundingContext.status === 'demo_safe' ? groundingContext.sources : []
   });
 
   return response;
