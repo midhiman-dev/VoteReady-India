@@ -17,7 +17,10 @@ describe('orchestrateAssistantResponse', () => {
     expect(response.language).toBe(request.language);
     expect(response.explanationMode).toBe(request.explanationMode);
     expect(response.status).toBe('cannot_verify');
-    expect(response.sources).toEqual([]);
+    expect(response.sources.length).toBeGreaterThan(0);
+    for (const source of response.sources) {
+      expect(source.freshnessStatus).not.toBe('verified');
+    }
     expect(response.freshnessSummary?.status).toBe('review_due');
     expect(response.generatedAt).toBeDefined();
 

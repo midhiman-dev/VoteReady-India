@@ -4,6 +4,17 @@ interface Props {
   response: AssistantResponse;
 }
 
+const formatFreshness = (status: string) => {
+  const labels: Record<string, string> = {
+    verified: 'Verified',
+    review_due: 'Review due',
+    stale: 'Stale',
+    archived: 'Archived',
+    unverified: 'Unverified'
+  };
+  return labels[status] || status;
+};
+
 export default function AssistantResponsePreview({ response }: Props) {
   return (
     <div className="response-preview">
@@ -44,6 +55,32 @@ export default function AssistantResponsePreview({ response }: Props) {
       <div className="source-count">
         Sources returned: {response.sources.length}
       </div>
+
+      {response.sources.length > 0 && (
+        <div className="source-cards-section">
+          <h4 className="source-section-title">Source Metadata</h4>
+          <div className="source-cards-list">
+            {response.sources.map((source) => (
+              <div key={source.id} className="assistant-source-card">
+                <div className="source-card-header">
+                  <span className="source-card-title">{source.title}</span>
+                  <span className={`source-freshness-badge freshness-${source.freshnessStatus}`}>
+                    {formatFreshness(source.freshnessStatus)}
+                  </span>
+                </div>
+                <div className="source-card-body">
+                  <div className="source-detail"><span className="detail-label">Type:</span> {source.sourceType.replace(/_/g, ' ')}</div>
+                  <div className="source-detail"><span className="detail-label">Jurisdiction:</span> {source.jurisdictionLevel}</div>
+                  {source.publisher && <div className="source-detail"><span className="detail-label">Publisher:</span> {source.publisher}</div>}
+                </div>
+                <div className="source-card-safety-note">
+                  Source metadata only. These records are not verified procedural guidance yet.
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

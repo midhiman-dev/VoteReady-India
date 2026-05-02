@@ -3,6 +3,7 @@ import {
   AssistantResponse,
   AssistantAnswerBlock
 } from "./assistant";
+import { SourceRecord } from "./source";
 import { IsoDateTimeString, LanguagePreference } from "./common";
 import { ASSISTANT_LANGUAGE_COPY } from "./assistantLanguageCopy";
 
@@ -25,8 +26,9 @@ export function createAssistantShellResponse(params: {
   request: AssistantRequest;
   generatedAt?: IsoDateTimeString;
   sourceCount?: number;
+  sources?: SourceRecord[];
 }): AssistantResponse {
-  const { request, generatedAt, sourceCount } = params;
+  const { request, generatedAt, sourceCount, sources = [] } = params;
   const timestamp = generatedAt || new Date().toISOString();
 
   // Fallback to english if the requested language is unsupported for some reason
@@ -88,7 +90,7 @@ export function createAssistantShellResponse(params: {
     language: request.language,
     explanationMode: request.explanationMode,
     answerBlocks,
-    sources: [],
+    sources,
     generatedAt: timestamp,
     freshnessSummary: {
       status: "review_due",

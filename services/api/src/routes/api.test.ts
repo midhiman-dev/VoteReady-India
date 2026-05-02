@@ -139,7 +139,8 @@ describe('API Routes', () => {
       expect(response.body.explanationMode).toBe(validRequest.explanationMode);
       expect(response.body.answerBlocks).toBeInstanceOf(Array);
       expect(response.body.answerBlocks.length).toBeGreaterThan(0);
-      expect(response.body.sources).toEqual([]);
+      expect(response.body.sources).toBeInstanceOf(Array);
+      expect(response.body.sources.length).toBeGreaterThan(0);
       expect(response.body.freshnessSummary.status).toBe('review_due');
 
       // Check for non-guidance text
