@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { SavedGuidanceItem } from "@voteready/shared";
 import { getSavedGuidance, removeSavedGuidanceItem, clearAllSavedGuidance } from "../lib/savedGuidanceStorage";
+import { getSavedGuidanceRepositoryStatus } from "../lib/savedGuidanceRepository";
 
 interface SavedGuidancePanelProps {
   refreshTrigger?: number;
@@ -16,6 +17,7 @@ export const SavedGuidancePanel: React.FC<SavedGuidancePanelProps> = ({
   onItemRemoved 
 }) => {
   const [items, setItems] = useState<SavedGuidanceItem[]>([]);
+  const repoStatus = getSavedGuidanceRepositoryStatus();
 
   const loadItems = () => {
     setItems(getSavedGuidance());
@@ -59,8 +61,12 @@ export const SavedGuidancePanel: React.FC<SavedGuidancePanelProps> = ({
 
       <div className="safety-note local-only-note" style={{ borderLeft: '4px solid #f39c12', backgroundColor: '#fff9eb', padding: '0.75rem', marginBottom: '1rem', borderRadius: '4px' }}>
         <p style={{ margin: 0, fontSize: '0.9rem' }}>
-          <strong>Local-only:</strong> These items are saved only in your browser. They are not synced to any server and will be lost if you clear your browser data.
+          <strong>Saved guidance is stored locally in this browser.</strong> These items are not synced to any server and will be lost if you clear your browser data.
         </p>
+      </div>
+
+      <div className="cloud-sync-status" id="cloud-sync-status" style={{ fontSize: '0.8rem', color: '#666', padding: '0 0.75rem', marginBottom: '1rem', borderLeft: '4px solid #ddd' }}>
+        <p style={{ margin: 0 }}>{repoStatus.message}</p>
       </div>
 
       {items.length === 0 ? (
