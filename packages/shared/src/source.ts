@@ -1,4 +1,4 @@
-import { IsoDateTimeString } from "./common";
+import { IsoDateTimeString } from "./common.js";
 
 export type SourceType =
   | "eci_official"

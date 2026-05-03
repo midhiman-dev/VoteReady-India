@@ -44,6 +44,9 @@ The application leverages the full Google Cloud ecosystem for a premium, scalabl
 - **Firebase Authentication**: Provides secure Google Sign-In for account-based features.
 - **Firebase Analytics**: Tracks product interactions securely without PII.
 
+### Production Runtime
+The API service uses a multi-stage Docker build that produces a lean runtime image. It runs compiled JavaScript (`dist/`) using native Node.js ESM, ensuring high efficiency and security by excluding TypeScript source and development tooling (like `tsx`) from the production environment.
+
 ## Evidence of Integration
 - **Grounded Assistant**: Responses include source metadata and freshness indicators fetched from Firestore.
 - **Live Auth**: Sign-in with Google is active in the "Account & Sync" panel.

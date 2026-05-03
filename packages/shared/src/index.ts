@@ -9,20 +9,20 @@ export interface HealthResponse {
   timestamp: string;
 }
 
-export * from "./common";
-export * from "./source";
-export * from "./assistant";
-export * from "./sourceRegistry";
-export * from "./api";
-export * from "./options";
-export * from "./mockAssistantFixtures";
-export * from "./assistantShellFixtures";
-export * from "./assistantLanguageCopy";
-export * from "./sourceFragments";
-export * from "./sourceFragmentFixtures";
-export * from "./guidedJourneys";
-export * from "./electionBasics";
-export * from "./savedGuidance";
-export * from "./reminderPreferences";
-export * from "./analyticsEvents";
+export * from "./common.js";
+export * from "./source.js";
+export * from "./assistant.js";
+export * from "./sourceRegistry.js";
+export * from "./api.js";
+export * from "./options.js";
+export * from "./mockAssistantFixtures.js";
+export * from "./assistantShellFixtures.js";
+export * from "./assistantLanguageCopy.js";
+export * from "./sourceFragments.js";
+export * from "./sourceFragmentFixtures.js";
+export * from "./guidedJourneys.js";
+export * from "./electionBasics.js";
+export * from "./savedGuidance.js";
+export * from "./reminderPreferences.js";
+export * from "./analyticsEvents.js";
 

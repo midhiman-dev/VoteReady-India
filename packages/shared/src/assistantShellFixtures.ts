@@ -3,10 +3,10 @@ import {
   AssistantResponse,
   AssistantAnswerBlock,
   AssistantAnswerStatus
-} from "./assistant";
-import { SourceRecord } from "./source";
-import { IsoDateTimeString, LanguagePreference } from "./common";
-import { ASSISTANT_LANGUAGE_COPY } from "./assistantLanguageCopy";
+} from "./assistant.js";
+import { SourceRecord } from "./source.js";
+import { IsoDateTimeString, LanguagePreference } from "./common.js";
+import { ASSISTANT_LANGUAGE_COPY } from "./assistantLanguageCopy.js";
 
 /**
  * Shared assistant shell fixtures for the real assistant endpoint.

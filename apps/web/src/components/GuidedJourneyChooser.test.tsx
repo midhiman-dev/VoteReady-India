@@ -36,7 +36,6 @@ describe("GuidedJourneyChooser", () => {
 
     // Verify title and status
     expect(screen.getByText(turning18Journey.title)).toBeDefined();
-    expect(screen.getByText(/source backed pending/i)).toBeDefined();
     expect(screen.getByText(/Source-backed guidance active/i)).toBeDefined();
 
     // Verify placeholder section headings

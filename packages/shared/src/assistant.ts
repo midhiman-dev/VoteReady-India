@@ -2,8 +2,8 @@ import {
   IsoDateTimeString,
   LanguagePreference,
   ExplanationMode,
-} from "./common";
-import { SourceRecord, SourceFreshnessStatus } from "./source";
+} from "./common.js";
+import { SourceRecord, SourceFreshnessStatus } from "./source.js";
 
 export type AssistantAnswerStatus =
   | "answered"

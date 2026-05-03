@@ -3,8 +3,8 @@ import {
   IsoDateTimeString,
   LanguagePreference,
   ExplanationMode,
-} from "./common";
-import { SourceRecord } from "./source";
+} from "./common.js";
+import { SourceRecord } from "./source.js";
 
 export interface AppMetadataResponse {
   appName: string;

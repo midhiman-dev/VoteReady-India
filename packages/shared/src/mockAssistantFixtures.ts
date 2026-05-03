@@ -1,8 +1,8 @@
 import { 
   AssistantRequest, 
   AssistantResponse 
-} from "./assistant";
-import { IsoDateTimeString } from "./common";
+} from "./assistant.js";
+import { IsoDateTimeString } from "./common.js";
 
 /**
  * Shared mock assistant fixtures for development and testing.
