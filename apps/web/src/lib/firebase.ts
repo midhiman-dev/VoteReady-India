@@ -1,22 +1,24 @@
 import { initializeApp, getApps, FirebaseApp } from 'firebase/app';
 import { getAuth, Auth, GoogleAuthProvider } from 'firebase/auth';
+import { getFirestore, Firestore } from 'firebase/firestore';
 import { getFirebaseClientConfigStatus } from './firebaseConfig';
 
 let app: FirebaseApp | undefined;
 let auth: Auth | undefined;
+let db: Firestore | undefined;
 const googleProvider = new GoogleAuthProvider();
 
 /**
  * Initializes the Firebase client if enabled and properly configured.
- * Returns the Auth instance if successful, otherwise undefined.
+ * Returns the Auth and Firestore instances if successful, otherwise undefined.
  */
 export function getFirebaseClient() {
-  if (auth) return { app, auth, googleProvider };
+  if (auth && db) return { app, auth, db, googleProvider };
 
   const configStatus = getFirebaseClientConfigStatus();
 
   if (!configStatus.enabled || !configStatus.configured) {
-    return { app: undefined, auth: undefined, googleProvider: undefined };
+    return { app: undefined, auth: undefined, db: undefined, googleProvider: undefined };
   }
 
   const firebaseConfig = {
@@ -35,9 +37,10 @@ export function getFirebaseClient() {
       app = getApps()[0];
     }
     auth = getAuth(app);
-    return { app, auth, googleProvider };
+    db = getFirestore(app);
+    return { app, auth, db, googleProvider };
   } catch (error) {
     console.error('Failed to initialize Firebase:', error);
-    return { app: undefined, auth: undefined, googleProvider: undefined };
+    return { app: undefined, auth: undefined, db: undefined, googleProvider: undefined };
   }
 }

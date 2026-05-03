@@ -10,7 +10,8 @@ import {
 } from '@voteready/shared';
 import { postAssistantRequest } from '../lib/apiClient';
 import AssistantResponsePreview from './AssistantResponsePreview';
-import { saveGuidanceItem } from '../lib/savedGuidanceStorage';
+import { saveGuidance } from '../lib/savedGuidanceRepository';
+import { useAuth } from '../lib/AuthContext';
 import { trackEvent } from '../lib/analytics';
 import { detectIntent, IntentResult } from '../lib/intentDetector';
 
@@ -41,6 +42,8 @@ export default function AssistantShell({ onItemSaved }: AssistantShellProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const { user } = useAuth();
+
   // ─── Live intent detection on every keystroke ───────────────────────────────
   const liveIntent = useMemo(() => detectIntent(question), [question]);
   const showInputHint = question.trim().length > 8 && liveIntent.hintLabel !== '';
@@ -52,11 +55,12 @@ export default function AssistantShell({ onItemSaved }: AssistantShellProps) {
     ? liveIntent.followUpChips
     : DEFAULT_CHIPS;
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!response) return;
 
     const item: SavedGuidanceItem = {
       id: response.id,
+      userId: user?.uid,
       question,
       responseStatus: response.status,
       language: response.language,
@@ -66,19 +70,24 @@ export default function AssistantShell({ onItemSaved }: AssistantShellProps) {
         response.answerBlocks.find(b => b.type === 'short_answer')?.content.substring(0, 100) +
           '...' || 'No summary available',
       sourceCount: response.sources.length,
-      localOnlyMarker: true,
+      localOnlyMarker: !user,
+      
+      // Store rich details for Firestore/future local reconstruction
+      answerBlocks: response.answerBlocks,
+      sources: response.sources,
+      freshnessSummary: response.freshnessSummary
     };
 
-    saveGuidanceItem(item);
+    await saveGuidance(item, user?.uid);
     setIsSaved(true);
     setSaveConfirmed(true);
 
-    trackEvent('assistant_response_saved_locally', {
+    trackEvent('assistant_response_saved', {
       language: response.language,
       explanationMode: response.explanationMode,
       responseStatus: response.status,
       sourceCount: response.sources.length,
-      storageMode: 'local',
+      storageMode: user ? 'cloud' : 'local',
     });
 
     if (onItemSaved) onItemSaved();
@@ -270,9 +279,9 @@ export default function AssistantShell({ onItemSaved }: AssistantShellProps) {
                   <button
                     onClick={handleSave}
                     className="save-response-btn"
-                    aria-label="Save response locally"
+                    aria-label={user ? "Save response to your account" : "Save response locally"}
                   >
-                    🔖 Save
+                    🔖 {user ? 'Save to Cloud' : 'Save'}
                   </button>
                 ) : (
                   <span role="status" className="saved-confirmation">

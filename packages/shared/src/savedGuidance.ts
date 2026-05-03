@@ -1,12 +1,15 @@
 import { LanguagePreference, ExplanationMode, IsoDateTimeString } from "./common";
-import { AssistantAnswerStatus } from "./assistant";
+import { AssistantAnswerStatus, AssistantAnswerBlock, AssistantResponse } from "./assistant";
+import { SourceRecord } from "./source";
 
 /**
- * Represents an assistant response saved locally by the user.
- * We store minimal metadata to avoid stale data or security risks.
+ * Represents an assistant response saved by the user.
+ * For signed-in users, this is persisted to Firestore.
+ * For anonymous users, it stays in localStorage.
  */
 export interface SavedGuidanceItem {
   id: string;
+  userId?: string; // Firestore-only link
   question: string;
   responseStatus: AssistantAnswerStatus;
   language: LanguagePreference;
@@ -15,6 +18,11 @@ export interface SavedGuidanceItem {
   shortSummary: string;
   sourceCount: number;
   localOnlyMarker: boolean;
+  
+  // Rich details for full reconstruction
+  answerBlocks?: AssistantAnswerBlock[];
+  sources?: SourceRecord[];
+  freshnessSummary?: AssistantResponse["freshnessSummary"];
 }
 
 export const SAVED_GUIDANCE_STORAGE_KEY = "voteready.savedGuidance.v1";

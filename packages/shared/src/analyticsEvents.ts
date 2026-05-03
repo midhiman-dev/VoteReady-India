@@ -6,7 +6,7 @@
 export type AnalyticsEventName =
   | 'assistant_question_submitted'
   | 'assistant_response_received'
-  | 'assistant_response_saved_locally'
+  | 'assistant_response_saved'
   | 'saved_guidance_removed'
   | 'saved_guidance_cleared'
   | 'guided_journey_selected'
