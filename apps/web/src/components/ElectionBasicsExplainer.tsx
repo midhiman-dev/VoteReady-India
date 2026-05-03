@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { ELECTION_BASICS_TOPICS, ElectionBasicsTopicSummary } from "@voteready/shared";
+import { trackEvent } from "../lib/analytics";
 
 /**
  * Election Basics Explainer Shell Component
@@ -10,10 +11,12 @@ export const ElectionBasicsExplainer: React.FC = () => {
 
   const handleSelect = (topic: ElectionBasicsTopicSummary) => {
     setSelectedTopic(topic);
+    trackEvent('election_basics_topic_selected', { topicId: topic.id });
   };
 
   const handleBack = () => {
     setSelectedTopic(null);
+    trackEvent('election_basics_back_clicked');
   };
 
   if (selectedTopic) {

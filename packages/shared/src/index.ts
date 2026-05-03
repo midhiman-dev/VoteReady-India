@@ -24,4 +24,5 @@ export * from "./guidedJourneys";
 export * from "./electionBasics";
 export * from "./savedGuidance";
 export * from "./reminderPreferences";
+export * from "./analyticsEvents";
 

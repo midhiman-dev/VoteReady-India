@@ -11,6 +11,7 @@ import {
 import { postAssistantRequest } from '../lib/apiClient';
 import AssistantResponsePreview from './AssistantResponsePreview';
 import { saveGuidanceItem } from '../lib/savedGuidanceStorage';
+import { trackEvent } from '../lib/analytics';
 
 function formatOptionLabel(val: string): string {
   return val.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
@@ -47,6 +48,15 @@ export default function AssistantShell({ onItemSaved }: AssistantShellProps) {
 
     saveGuidanceItem(item);
     setIsSaved(true);
+    
+    trackEvent('assistant_response_saved_locally', {
+      language: response.language,
+      explanationMode: response.explanationMode,
+      responseStatus: response.status,
+      sourceCount: response.sources.length,
+      storageMode: 'local'
+    });
+
     if (onItemSaved) onItemSaved();
   };
 
@@ -64,8 +74,20 @@ export default function AssistantShell({ onItemSaved }: AssistantShellProps) {
     };
 
     try {
+      trackEvent('assistant_question_submitted', {
+        language,
+        explanationMode
+      });
+
       const data = await postAssistantRequest(request);
       setResponse(data);
+
+      trackEvent('assistant_response_received', {
+        language: data.language,
+        explanationMode: data.explanationMode,
+        responseStatus: data.status,
+        sourceCount: data.sources.length
+      });
     } catch (err) {
       console.error('Error calling assistant API:', err);
       setError(err instanceof Error ? err.message : 'Unknown error occurred');
