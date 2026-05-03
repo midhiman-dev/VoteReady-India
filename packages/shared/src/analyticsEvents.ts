@@ -6,7 +6,9 @@
 export type AnalyticsEventName =
   | 'assistant_question_submitted'
   | 'assistant_response_received'
-  | 'assistant_response_saved_locally'
+  | 'guidance_saved'
+  | 'source_card_viewed'
+  | 'mode_changed'
   | 'saved_guidance_removed'
   | 'saved_guidance_cleared'
   | 'guided_journey_selected'
@@ -15,7 +17,9 @@ export type AnalyticsEventName =
   | 'election_basics_back_clicked'
   | 'reminder_preferences_saved'
   | 'reminder_preferences_reset'
-  | 'auth_shell_viewed';
+  | 'auth_panel_viewed'
+  | 'sign_in_initiated'
+  | 'sign_out_initiated';
 
 /**
  * Analytics Event Payload interface
@@ -31,8 +35,12 @@ export interface AnalyticsEventPayload {
   storageMode?: 'local' | 'cloud';
   cloudSyncActive?: boolean;
   authMode?: string;
+  signedIn?: boolean;
   appCheckEnabled?: boolean;
   remindersEnabled?: boolean;
+  intentCategory?: string;
+  sourceType?: string;
+  freshnessState?: string;
   preferredChannelPlaceholder?: string;
   timingPreferencePlaceholder?: string;
 }

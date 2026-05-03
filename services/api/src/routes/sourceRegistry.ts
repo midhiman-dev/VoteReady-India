@@ -1,12 +1,14 @@
 import { Router } from 'express';
-import { SourceRegistryResponse, INITIAL_SOURCE_REGISTRY } from '@voteready/shared';
+import { SourceRegistryResponse } from '@voteready/shared';
+import { sourceRepository } from '../repositories/sourceRepository.js';
 
 const router = Router();
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
+  const sources = await sourceRepository.getSourceRegistry();
   const response: SourceRegistryResponse = {
-    sources: INITIAL_SOURCE_REGISTRY,
-    count: INITIAL_SOURCE_REGISTRY.length,
+    sources: sources,
+    count: sources.length,
     generatedAt: new Date().toISOString()
   };
   res.json(response);

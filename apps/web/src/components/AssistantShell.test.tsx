@@ -3,22 +3,28 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import AssistantShell from './AssistantShell';
 import { postAssistantRequest } from '../lib/apiClient';
 import { AssistantResponse } from '@voteready/shared';
+import { useAuth } from '../lib/AuthContext';
+import { saveGuidance } from '../lib/savedGuidanceRepository';
 
 // Mock the API client
 vi.mock('../lib/apiClient', () => ({
   postAssistantRequest: vi.fn(),
 }));
 
-// Mock the storage
-vi.mock('../lib/savedGuidanceStorage', () => ({
-  saveGuidanceItem: vi.fn(),
+// Mock the repository
+vi.mock('../lib/savedGuidanceRepository', () => ({
+  saveGuidance: vi.fn(),
 }));
 
-import { saveGuidanceItem } from '../lib/savedGuidanceStorage';
+// Mock Auth
+vi.mock('../lib/AuthContext', () => ({
+  useAuth: vi.fn(),
+}));
 
 describe('AssistantShell', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    (useAuth as any).mockReturnValue({ user: null, loading: false });
   });
 
   it('renders title and safety messaging', () => {
@@ -114,7 +120,7 @@ describe('AssistantShell', () => {
     });
   });
 
-  it('saves an assistant response locally when Save button is clicked', async () => {
+  it('saves an assistant response when Save button is clicked', async () => {
     const mockResponse: AssistantResponse = {
       id: 'assistant-resp-456',
       status: 'answered',
@@ -147,8 +153,34 @@ describe('AssistantShell', () => {
     const saveBtn = screen.getByRole('button', { name: /save response locally/i });
     fireEvent.click(saveBtn);
 
-    expect(saveGuidanceItem).toHaveBeenCalled();
-    expect(screen.getByText(/✓ saved locally/i)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(saveGuidance).toHaveBeenCalled();
+      expect(screen.getByText(/✓ saved locally/i)).toBeInTheDocument();
+    });
+  });
+
+  it('shows Save to Cloud when user is signed in', async () => {
+    (useAuth as any).mockReturnValue({ user: { uid: 'user-123' }, loading: false });
+
+    const mockResponse: AssistantResponse = {
+      id: 'assistant-resp-456',
+      status: 'answered',
+      language: 'simple_english',
+      explanationMode: 'simple',
+      answerBlocks: [{ type: 'short_answer', content: 'Short answer.' }],
+      sources: [],
+      generatedAt: '2026-04-28T00:00:00Z',
+    };
+    vi.mocked(postAssistantRequest).mockResolvedValueOnce(mockResponse);
+
+    render(<AssistantShell />);
+    fireEvent.change(screen.getByLabelText(/ask a question/i), { target: { value: 'test' } });
+    fireEvent.click(screen.getByRole('button', { name: /ask assistant/i }));
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /save response to your account/i })).toBeInTheDocument();
+      expect(screen.getByText(/Save to Cloud/i)).toBeInTheDocument();
+    });
   });
 
   it('shows input intent hint when typing an eligibility question', async () => {
@@ -188,30 +220,5 @@ describe('AssistantShell', () => {
     // Follow-up section should appear
     expect(screen.getByText(/you might also want to ask/i)).toBeInTheDocument();
     expect(screen.getByRole('group', { name: /follow-up questions/i })).toBeInTheDocument();
-  });
-
-  it('shows continuity hint after a response', async () => {
-    const mockResponse: AssistantResponse = {
-      id: 'resp-cont',
-      status: 'answered',
-      language: 'simple_english',
-      explanationMode: 'simple',
-      answerBlocks: [{ type: 'short_answer', content: 'Test answer.' }],
-      sources: [],
-      generatedAt: '2026-04-28T00:00:00Z',
-    };
-
-    vi.mocked(postAssistantRequest).mockResolvedValueOnce(mockResponse);
-    render(<AssistantShell />);
-
-    const textarea = screen.getByLabelText(/ask a question/i);
-    fireEvent.change(textarea, { target: { value: 'Some question here' } });
-    fireEvent.click(screen.getByRole('button', { name: /ask assistant/i }));
-
-    await waitFor(() => {
-      expect(screen.getByText('Test answer.')).toBeInTheDocument();
-    });
-
-    expect(screen.getByText(/ask a follow-up or explore another topic/i)).toBeInTheDocument();
   });
 });

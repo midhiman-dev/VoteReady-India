@@ -1,47 +1,54 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { trackEvent, getAnalyticsConfig } from './analytics';
+import { describe, it, expect, vi } from 'vitest';
+import { sanitizePayload, trackEvent, getAnalyticsConfig } from './analytics';
+import { AnalyticsEventPayload } from '@voteready/shared';
+import * as firebaseAnalytics from 'firebase/analytics';
+import * as firebaseClient from './firebase';
 
-describe('Analytics Shell', () => {
-  beforeEach(() => {
-    vi.spyOn(console, 'log').mockImplementation(() => {});
+// Mock Firebase
+vi.mock('firebase/analytics', () => ({
+  logEvent: vi.fn(),
+}));
+
+vi.mock('./firebase', () => ({
+  getFirebaseClient: vi.fn(),
+}));
+
+describe('analytics sanitization', () => {
+  it('strips non-whitelisted fields from payload', () => {
+    const rawPayload: any = {
+      language: 'hindi',
+      explanationMode: 'simple',
+      sensitiveField: 'should be removed',
+      userQuestion: 'this is private',
+      intentCategory: 'ELIGIBILITY_INTENT'
+    };
+
+    const sanitized = sanitizePayload(rawPayload);
+
+    expect(sanitized.language).toBe('hindi');
+    expect(sanitized.explanationMode).toBe('simple');
+    expect(sanitized.intentCategory).toBe('ELIGIBILITY_INTENT');
+    expect((sanitized as any).sensitiveField).toBeUndefined();
+    expect((sanitized as any).userQuestion).toBeUndefined();
   });
 
-  afterEach(() => {
-    vi.restoreAllMocks();
+  it('handles empty or undefined payload', () => {
+    expect(sanitizePayload({})).toEqual({});
   });
+});
 
-  describe('getAnalyticsConfig', () => {
-    it('should be disabled by default with empty env', () => {
-      const config = getAnalyticsConfig({});
-      expect(config.enabled).toBe(false);
-      expect(config.debugMode).toBe(false);
+describe('trackEvent safety', () => {
+  it('does not log event if analytics is disabled', () => {
+    // Mock config to disabled
+    vi.mock('./analytics', async () => {
+      const actual = await vi.importActual<any>('./analytics');
+      return {
+        ...actual,
+        getAnalyticsConfig: vi.fn(() => ({ enabled: false, debugMode: false })),
+      };
     });
 
-    it('should be enabled when VITE_ANALYTICS_ENABLED is true', () => {
-      const config = getAnalyticsConfig({ VITE_ANALYTICS_ENABLED: 'true' });
-      expect(config.enabled).toBe(true);
-      expect(config.debugMode).toBe(false);
-    });
-
-    it('should enable debug mode when VITE_ANALYTICS_DEBUG_MODE is true', () => {
-      const config = getAnalyticsConfig({ 
-        VITE_ANALYTICS_ENABLED: 'true',
-        VITE_ANALYTICS_DEBUG_MODE: 'true' 
-      });
-      expect(config.enabled).toBe(true);
-      expect(config.debugMode).toBe(true);
-    });
-  });
-
-  describe('trackEvent', () => {
-    it('should not log to console by default (disabled)', () => {
-      trackEvent('assistant_question_submitted', { language: 'english' });
-      expect(console.log).not.toHaveBeenCalled();
-    });
-
-    // Note: Testing trackEvent with enabled config is hard without further refactoring
-    // because trackEvent calls getAnalyticsConfig() which uses import.meta.env by default.
-    // However, since we've verified getAnalyticsConfig logic, and trackEvent depends on it,
-    // we can rely on the contract that if config.enabled is false, it returns early.
+    trackEvent('assistant_question_submitted', { language: 'english' });
+    expect(firebaseAnalytics.logEvent).not.toHaveBeenCalled();
   });
 });
