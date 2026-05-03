@@ -10,6 +10,14 @@ vi.mock("../lib/savedGuidanceStorage", () => ({
   clearAllSavedGuidance: vi.fn(),
 }));
 
+vi.mock("../lib/savedGuidanceRepository", () => ({
+  getSavedGuidanceRepositoryStatus: vi.fn(() => ({
+    mode: 'local_storage',
+    cloudSyncEnabled: false,
+    message: 'Cloud sync is not active yet.'
+  })),
+}));
+
 describe("SavedGuidancePanel", () => {
   const mockItems: SavedGuidanceItem[] = [
     {
@@ -33,7 +41,8 @@ describe("SavedGuidancePanel", () => {
     vi.mocked(storage.getSavedGuidance).mockReturnValue([]);
     render(<SavedGuidancePanel />);
     expect(screen.getByText(/No saved guidance items yet/i)).toBeInTheDocument();
-    expect(screen.getByText(/Local-only/i)).toBeInTheDocument();
+    expect(screen.getByText(/Saved guidance is stored locally in this browser/i)).toBeInTheDocument();
+    expect(screen.getByText(/Cloud sync is not active yet/i)).toBeInTheDocument();
   });
 
   it("renders list of saved items", () => {
