@@ -23,7 +23,10 @@ export async function orchestrateAssistantResponse(params: {
 
   // 3. Initial status mapping
   let status: "answered" | "cannot_verify" | "out_of_scope" = "answered";
-  if (safetyCategory === "cannot_verify_procedural") {
+  
+  if (groundingContext.status === 'no_sources_available') {
+    status = "cannot_verify";
+  } else if (safetyCategory === "cannot_verify_procedural") {
     status = "cannot_verify";
   } else if (safetyCategory === "neutral_refusal_political") {
     status = "out_of_scope";

@@ -261,7 +261,9 @@ Use for:
 
 ## 5. Source Metadata Standard
 
-Every source entry stored in Firestore should support these fields where applicable:
+Every source entry stored in Firestore should support these fields where applicable. 
+
+**Firestore Collection:** `sourceRegistry`
 
 ```json
 {
@@ -287,6 +289,8 @@ Every source entry stored in Firestore should support these fields where applica
 ## 6. Content Fragment Metadata Standard
 
 Every normalized content fragment should support:
+
+**Firestore Collection:** `sourceFragments`
 
 ```json
 {
