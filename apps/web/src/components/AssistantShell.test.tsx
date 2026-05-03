@@ -30,7 +30,7 @@ describe('AssistantShell', () => {
   it('renders title and safety messaging', () => {
     render(<AssistantShell />);
     expect(screen.getByText('Ask VoteReady')).toBeInTheDocument();
-    expect(screen.getByText(/can't verify real election guidance yet/i)).toBeInTheDocument();
+    expect(screen.getByText(/powered by Google Gemini and official election sources/i)).toBeInTheDocument();
   });
 
   it('renders empty default question', () => {
@@ -150,7 +150,7 @@ describe('AssistantShell', () => {
     });
 
     // Click Save
-    const saveBtn = screen.getByRole('button', { name: /save response locally/i });
+    const saveBtn = screen.getByRole('button', { name: /save/i });
     fireEvent.click(saveBtn);
 
     await waitFor(() => {

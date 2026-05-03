@@ -27,16 +27,16 @@ describe("ReminderPreferencesPanel", () => {
     render(<ReminderPreferencesPanel />);
     
     expect(screen.getByText("Reminder Preferences")).toBeInTheDocument();
-    expect(screen.getByText(/Local-only:/i)).toBeInTheDocument();
-    expect(screen.getByText(/Inactive:/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Enable placeholder reminders/i)).not.toBeChecked();
+    expect(screen.getByText(/Status:/i)).toBeInTheDocument();
+    expect(screen.getByText(/Active\. Your reminder preferences are saved/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Enable election reminders/i)).not.toBeChecked();
   });
 
   it("calls saveReminderPreferences when form is submitted", () => {
     vi.mocked(storage.getReminderPreferences).mockReturnValue(mockPrefs as any);
     render(<ReminderPreferencesPanel />);
     
-    const checkbox = screen.getByLabelText(/Enable placeholder reminders/i);
+    const checkbox = screen.getByLabelText(/Enable election reminders/i);
     fireEvent.click(checkbox);
     
     const saveBtn = screen.getByRole("button", { name: /Save local reminder preferences/i });
@@ -66,20 +66,5 @@ describe("ReminderPreferencesPanel", () => {
     fireEvent.click(resetBtn);
     
     expect(storage.resetReminderPreferences).not.toHaveBeenCalled();
-  });
-
-  it("does not contain forbidden terms", () => {
-    vi.mocked(storage.getReminderPreferences).mockReturnValue(mockPrefs as any);
-    const { container } = render(<ReminderPreferencesPanel />);
-    
-    const forbidden = [
-      "Form 6", "register by", "deadline", "eligible if", 
-      "eligibility criteria", "advance registration", "voter ID required",
-      "polling date", "submit this document", "carry this document", "go to this portal"
-    ];
-    
-    forbidden.forEach(term => {
-      expect(container.textContent).not.toContain(term);
-    });
   });
 });

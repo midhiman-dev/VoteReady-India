@@ -28,6 +28,7 @@ function App() {
   useEffect(() => {
     async function fetchData() {
       try {
+        // Fetch metadata in background without blocking the main app shell
         setLoading(true)
         setError(null)
         
@@ -40,7 +41,7 @@ function App() {
         setRegistry(registryData)
       } catch (err) {
         console.error('Error fetching API data:', err)
-        setError('Unable to reach the API metadata service. Start the API locally and try again.')
+        setError('Unable to reach the API metadata service. Some status information may be unavailable.')
       } finally {
         setLoading(false)
       }
@@ -57,46 +58,42 @@ function App() {
       </header>
 
       <main className="app-main">
-        {loading && (
-          <div className="loading">
-            <p>Fetching latest API metadata...</p>
-          </div>
-        )}
-
-        {error && (
-          <div className="error">
-            <p>{error}</p>
-          </div>
-        )}
-
-        {!loading && !error && metadata && registry && (
-          <div className="tab-content">
-            {activeTab === 'ask' && <AssistantShell onItemSaved={handleRefresh} />}
-            {activeTab === 'journeys' && <GuidedJourneyChooser />}
-            {activeTab === 'basics' && <ElectionBasicsExplainer />}
-            {activeTab === 'saved' && <SavedGuidancePanel refreshTrigger={refreshTrigger} onItemRemoved={handleRefresh} />}
-            {activeTab === 'settings' && (
-              <div className="settings-container">
-                <h2 className="settings-title">Settings</h2>
-                <div className="settings-grid">
-                  <ReminderPreferencesPanel />
-                  <AuthStatusPanel />
-                </div>
-                <div className="metadata-grid">
-                  <ApiStatusCard metadata={metadata} />
-                  <SourceRegistryPreview registry={registry} />
-                </div>
+        <div className="tab-content">
+          {activeTab === 'ask' && <AssistantShell onItemSaved={handleRefresh} />}
+          {activeTab === 'journeys' && <GuidedJourneyChooser />}
+          {activeTab === 'basics' && <ElectionBasicsExplainer />}
+          {activeTab === 'saved' && <SavedGuidancePanel refreshTrigger={refreshTrigger} onItemRemoved={handleRefresh} />}
+          {activeTab === 'settings' && (
+            <div className="settings-container">
+              <h2 className="settings-title">Settings</h2>
+              <div className="settings-grid">
+                <ReminderPreferencesPanel />
+                <AuthStatusPanel />
               </div>
-            )}
-          </div>
-        )}
-
-        {!loading && !error && (!metadata || !registry) && (
-          <div className="status-card">
-            <h2>Web app shell ready</h2>
-            <p>This is the foundation for VoteReady India. API connection established but no metadata returned.</p>
-          </div>
-        )}
+              
+              <div className="metadata-status-section">
+                {loading ? (
+                  <div className="loading-inline">
+                    <p>Fetching latest API metadata...</p>
+                  </div>
+                ) : error ? (
+                  <div className="error-inline">
+                    <p>{error}</p>
+                  </div>
+                ) : metadata && registry ? (
+                  <div className="metadata-grid">
+                    <ApiStatusCard metadata={metadata} />
+                    <SourceRegistryPreview registry={registry} />
+                  </div>
+                ) : (
+                  <div className="status-card">
+                    <p>API connection established but no metadata returned.</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
       </main>
 
       <nav className="bottom-nav">

@@ -1,16 +1,16 @@
 import { describe, it, expect, vi } from 'vitest';
-import { sanitizePayload, trackEvent, getAnalyticsConfig } from './analytics';
-import { AnalyticsEventPayload } from '@voteready/shared';
+import { sanitizePayload, trackEvent } from './analytics';
 import * as firebaseAnalytics from 'firebase/analytics';
-import * as firebaseClient from './firebase';
+import { getAnalyticsInstance } from './firebase';
 
 // Mock Firebase
 vi.mock('firebase/analytics', () => ({
   logEvent: vi.fn(),
+  isSupported: vi.fn().mockResolvedValue(true),
 }));
 
 vi.mock('./firebase', () => ({
-  getFirebaseClient: vi.fn(),
+  getAnalyticsInstance: vi.fn(),
 }));
 
 describe('analytics sanitization', () => {
@@ -38,17 +38,18 @@ describe('analytics sanitization', () => {
 });
 
 describe('trackEvent safety', () => {
-  it('does not log event if analytics is disabled', () => {
-    // Mock config to disabled
-    vi.mock('./analytics', async () => {
-      const actual = await vi.importActual<any>('./analytics');
-      return {
-        ...actual,
-        getAnalyticsConfig: vi.fn(() => ({ enabled: false, debugMode: false })),
-      };
-    });
+  it('does not log event if analytics is disabled', async () => {
+    // This is tricky because trackEvent is void and uses internal config
+    // But we can verify it doesn't call getAnalyticsInstance
+    
+    // Set env mock
+    const originalEnv = import.meta.env.VITE_ANALYTICS_ENABLED;
+    import.meta.env.VITE_ANALYTICS_ENABLED = 'false';
 
     trackEvent('assistant_question_submitted', { language: 'english' });
-    expect(firebaseAnalytics.logEvent).not.toHaveBeenCalled();
+    
+    expect(getAnalyticsInstance).not.toHaveBeenCalled();
+    
+    import.meta.env.VITE_ANALYTICS_ENABLED = originalEnv;
   });
 });

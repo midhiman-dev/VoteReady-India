@@ -5,9 +5,10 @@ import {
   fetchSavedGuidance 
 } from './savedGuidanceRepository';
 import * as localStore from './savedGuidanceStorage';
-import { getFirebaseClient } from './firebase';
+import { getFirestoreInstance } from './firebase';
 
 vi.mock('./firebase', () => ({
+  getFirestoreInstance: vi.fn(),
   getFirebaseClient: vi.fn(),
 }));
 
@@ -78,12 +79,11 @@ describe('SavedGuidanceRepository', () => {
 
     it('should save to Firestore when userId provided and db is ready', async () => {
       const mockDb = {};
-      (getFirebaseClient as any).mockReturnValue({ db: mockDb });
+      vi.mocked(getFirestoreInstance).mockResolvedValue(mockDb as any);
       
       await saveGuidance(mockItem, 'user-123');
       
       expect(localStore.saveGuidanceItem).not.toHaveBeenCalled();
-      // Firestore setDoc should have been called (verified via mocks if we had deeper spies)
     });
   });
 
@@ -96,11 +96,11 @@ describe('SavedGuidanceRepository', () => {
 
     it('should fetch from Firestore when userId provided', async () => {
       const mockDb = {};
-      (getFirebaseClient as any).mockReturnValue({ db: mockDb });
+      vi.mocked(getFirestoreInstance).mockResolvedValue(mockDb as any);
       
       // Mock getDocs to return an empty array for simplicity
       const { getDocs } = await import('firebase/firestore');
-      (getDocs as any).mockResolvedValue({ docs: [] });
+      vi.mocked(getDocs).mockResolvedValue({ docs: [] } as any);
 
       const items = await fetchSavedGuidance('user-123');
       expect(items).toEqual([]);
