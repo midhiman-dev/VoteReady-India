@@ -4,6 +4,9 @@
 
 VoteReady India is an interactive civic education assistant that helps young Indians understand how elections work, what applies to their situation, and what to do next through simple, source-backed guidance.
 
+### Public Deployed Application
+**Public URL**: [https://voteready-india-web-529590785617.asia-south1.run.app](https://voteready-india-web-529590785617.asia-south1.run.app)
+
 > **Disclaimer**: This application is currently in a safe-shell state. It does not provide real procedural election guidance, polling instructions, eligibility rules, or political recommendations. Gemini model calls, real source retrieval, and Firebase integrations are currently disabled by default to preserve strict boundaries.
 
 ## Safe-Shell Architecture Summary
