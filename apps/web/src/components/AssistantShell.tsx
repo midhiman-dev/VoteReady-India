@@ -113,6 +113,7 @@ export default function AssistantShell({ onItemSaved }: AssistantShellProps) {
             rows={3}
             placeholder="Ask VoteReady..."
             required
+            aria-required="true"
           />
         </div>
 
@@ -148,32 +149,49 @@ export default function AssistantShell({ onItemSaved }: AssistantShellProps) {
           </div>
         </div>
 
-        <button type="submit" disabled={loading} className="submit-btn">
+        <button 
+          type="submit" 
+          disabled={loading} 
+          className="submit-btn"
+          aria-busy={loading}
+        >
           {loading ? 'Thinking...' : 'Ask Assistant'}
         </button>
       </form>
 
-      {error && (
-        <div className="error mini-error" role="alert">
-          <p><strong>Error:</strong> {error}</p>
-        </div>
-      )}
-
-      {response && (
-        <div className="response-section">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-            <h3 style={{ margin: 0 }}>Response</h3>
-            {!isSaved ? (
-              <button onClick={handleSave} className="save-btn" style={{ padding: '0.25rem 0.75rem', fontSize: '0.8rem', cursor: 'pointer' }}>
-                Save Locally
-              </button>
-            ) : (
-              <span style={{ fontSize: '0.8rem', color: '#27ae60', fontWeight: 'bold' }}>✓ Saved locally</span>
-            )}
+      <div aria-live="polite" aria-atomic="true">
+        {error && (
+          <div className="error mini-error" role="alert">
+            <p><strong>Error:</strong> {error}</p>
           </div>
-          <AssistantResponsePreview response={response} />
-        </div>
-      )}
+        )}
+
+        {response && (
+          <div className="response-section">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+              <h3 style={{ margin: 0 }}>Response</h3>
+              {!isSaved ? (
+                <button 
+                  onClick={handleSave} 
+                  className="save-btn" 
+                  style={{ padding: '0.25rem 0.75rem', fontSize: '0.8rem', cursor: 'pointer' }}
+                  aria-label="Save response locally"
+                >
+                  Save Locally
+                </button>
+              ) : (
+                <span 
+                  role="status"
+                  style={{ fontSize: '0.8rem', color: '#27ae60', fontWeight: 'bold' }}
+                >
+                  ✓ Saved locally
+                </span>
+              )}
+            </div>
+            <AssistantResponsePreview response={response} />
+          </div>
+        )}
+      </div>
     </div>
   );
 }

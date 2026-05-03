@@ -38,14 +38,14 @@ describe("ElectionBasicsExplainer", () => {
 
   it("renders pending status labels for all cards", () => {
     render(<ElectionBasicsExplainer />);
-    const labels = screen.getAllByText(/source backed pending/i);
+    const labels = screen.getAllByLabelText(/topic status: source backed pending/i);
     expect(labels.length).toBe(ELECTION_BASICS_TOPICS.length);
   });
 
   it("shows placeholder detail panel when a topic is selected", () => {
     render(<ElectionBasicsExplainer />);
     const topic = ELECTION_BASICS_TOPICS[0];
-    const card = screen.getByText(topic.title);
+    const card = screen.getByRole("button", { name: new RegExp(topic.title, "i") });
     fireEvent.click(card);
 
     expect(screen.getByRole("heading", { name: topic.title, level: 2 })).toBeDefined();

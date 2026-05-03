@@ -52,18 +52,18 @@ export const ReminderPreferencesPanel: React.FC = () => {
   };
 
   return (
-    <div className="card reminder-preferences-panel" id="reminder-preferences-panel">
+    <section className="card reminder-preferences-panel" id="reminder-preferences-panel" aria-labelledby="reminder-preferences-title">
       <div className="panel-header">
-        <h2>Reminder Preferences</h2>
+        <h2 id="reminder-preferences-title">Reminder Preferences</h2>
       </div>
 
-      <div className="safety-note local-only-note">
+      <div className="safety-note local-only-note" role="note">
         <p>
           <strong>Local-only:</strong> Reminder preferences are stored only in this browser. No reminders, emails, SMS, push notifications, or calendar alerts are scheduled yet.
         </p>
       </div>
 
-      <div className="status-note reminder-inactive-note">
+      <div className="status-note reminder-inactive-note" role="status">
         <p>
           <strong>Inactive:</strong> Reminder timing cannot be activated until verified source-backed dates are connected.
         </p>
@@ -108,20 +108,30 @@ export const ReminderPreferencesPanel: React.FC = () => {
 
         <div className="actions">
           <div className="action-save-group">
-            <button type="submit" className="save-btn">
+            <button type="submit" className="save-btn" aria-label="Save local reminder preferences">
               Save Local Preferences
             </button>
-            {isSaved && <span className="save-status">Saved!</span>}
+            <div aria-live="polite" aria-atomic="true">
+              {isSaved && <span className="save-status" role="status">Saved!</span>}
+            </div>
           </div>
-          <button type="button" onClick={handleReset} className="reset-btn">
+          <button 
+            type="button" 
+            onClick={handleReset} 
+            className="reset-btn"
+            aria-label="Reset reminder preferences to defaults"
+          >
             Reset to Defaults
           </button>
         </div>
       </form>
 
       <div className="last-updated">
-        Last updated: {new Date(prefs.updatedAt).toLocaleString()}
+        Last updated:{' '}
+        <time dateTime={new Date(prefs.updatedAt).toISOString()}>
+          {new Date(prefs.updatedAt).toLocaleString()}
+        </time>
       </div>
-    </div>
+    </section>
   );
 };

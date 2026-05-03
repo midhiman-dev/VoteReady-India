@@ -27,8 +27,8 @@ describe('AssistantResponsePreview', () => {
 
   it('renders status and ID', () => {
     render(<AssistantResponsePreview response={mockResponse} />);
-    expect(screen.getByText('answered')).toBeInTheDocument();
-    expect(screen.getByText('ID: resp-123')).toBeInTheDocument();
+    expect(screen.getByLabelText(/Response status: answered/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Response ID: resp-123/i)).toBeInTheDocument();
   });
 
   it('renders metadata', () => {
@@ -71,9 +71,9 @@ describe('AssistantResponsePreview', () => {
 
     render(<AssistantResponsePreview response={responseWithSources} />);
     expect(screen.getByText('Sources returned: 1')).toBeInTheDocument();
-    expect(screen.getByText('Source Metadata')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /source metadata/i })).toBeInTheDocument();
     expect(screen.getByText('Test Source')).toBeInTheDocument();
-    expect(screen.getByText('Review due')).toBeInTheDocument();
-    expect(screen.getByText('Source metadata only. These records are not verified procedural guidance yet.')).toBeInTheDocument();
+    expect(screen.getByLabelText(/source freshness: review due/i)).toBeInTheDocument();
+    expect(screen.getByRole('note', { name: /source safety note/i })).toBeInTheDocument();
   });
 });

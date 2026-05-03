@@ -39,7 +39,7 @@ describe("ReminderPreferencesPanel", () => {
     const checkbox = screen.getByLabelText(/Enable placeholder reminders/i);
     fireEvent.click(checkbox);
     
-    const saveBtn = screen.getByRole("button", { name: /Save Local Preferences/i });
+    const saveBtn = screen.getByRole("button", { name: /Save local reminder preferences/i });
     fireEvent.click(saveBtn);
     
     expect(storage.saveReminderPreferences).toHaveBeenCalled();
@@ -51,7 +51,7 @@ describe("ReminderPreferencesPanel", () => {
     vi.spyOn(window, 'confirm').mockReturnValue(true);
     render(<ReminderPreferencesPanel />);
     
-    const resetBtn = screen.getByRole("button", { name: /Reset to Defaults/i });
+    const resetBtn = screen.getByRole("button", { name: /Reset reminder preferences to defaults/i });
     fireEvent.click(resetBtn);
     
     expect(storage.resetReminderPreferences).toHaveBeenCalled();
@@ -62,7 +62,7 @@ describe("ReminderPreferencesPanel", () => {
     vi.spyOn(window, 'confirm').mockReturnValue(false);
     render(<ReminderPreferencesPanel />);
     
-    const resetBtn = screen.getByRole("button", { name: /Reset to Defaults/i });
+    const resetBtn = screen.getByRole("button", { name: /Reset reminder preferences to defaults/i });
     fireEvent.click(resetBtn);
     
     expect(storage.resetReminderPreferences).not.toHaveBeenCalled();
