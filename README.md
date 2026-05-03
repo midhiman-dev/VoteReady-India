@@ -41,3 +41,9 @@ VoteReady India is an interactive civic education assistant that helps young Ind
 - verify before commit
 - keep the repo runnable
 - optimize for challenge scoring: alignment, Google services, quality, security, testing, efficiency, accessibility
+
+## Demo & Validation
+For detailed instructions on running and validating the current build:
+- [Demo Checklist](docs/testing/demo-checklist.md)
+- [MVP Demo Validation](docs/release-notes/mvp-demo-validation.md)
+- [Known Limitations](docs/handover/known-limitations.md)
