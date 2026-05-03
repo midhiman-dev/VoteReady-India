@@ -8,6 +8,7 @@ import { GuidedJourneyChooser } from './components/GuidedJourneyChooser'
 import { ElectionBasicsExplainer } from './components/ElectionBasicsExplainer'
 import { SavedGuidancePanel } from './components/SavedGuidancePanel'
 import { ReminderPreferencesPanel } from './components/ReminderPreferencesPanel'
+import { AuthStatusPanel } from './components/AuthStatusPanel'
 import './App.css'
 
 function App() {
@@ -70,6 +71,7 @@ function App() {
             <AssistantShell onItemSaved={handleRefresh} />
 
             <SavedGuidancePanel refreshTrigger={refreshTrigger} onItemRemoved={handleRefresh} />
+            <AuthStatusPanel />
             <ReminderPreferencesPanel />
             <GuidedJourneyChooser />
 
