@@ -223,9 +223,6 @@ h1 {
   gap: 2rem;
 }
 
-.mock-panel {
-  border-left: 4px solid #6366f1;
-}
 
 .dev-note {
   background-color: #fef3c7;
@@ -240,12 +237,6 @@ h1 {
 .dev-note p {
   margin: 0;
   color: #92400e;
-}
-
-.mock-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
 }
 
 .form-group {
