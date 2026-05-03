@@ -24,14 +24,14 @@ describe("GuidedJourneyChooser", () => {
 
   it("renders status labels for all cards", () => {
     render(<GuidedJourneyChooser />);
-    const labels = screen.getAllByText(/source backed pending/i);
+    const labels = screen.getAllByLabelText(/journey status: source backed pending/i);
     expect(labels.length).toBe(GUIDED_JOURNEY_SUMMARIES.length);
   });
 
   it("shows dedicated detail shell when 'Turning 18 soon' is selected", () => {
     render(<GuidedJourneyChooser />);
     const turning18Journey = GUIDED_JOURNEY_SUMMARIES.find(j => j.id === "turning_18_soon")!;
-    const card = screen.getByText(turning18Journey.title);
+    const card = screen.getByRole("button", { name: new RegExp(turning18Journey.title, "i") });
     fireEvent.click(card);
 
     // Verify title and status
@@ -53,7 +53,7 @@ describe("GuidedJourneyChooser", () => {
     render(<GuidedJourneyChooser />);
     // Select a journey other than Turning 18 soon
     const otherJourney = GUIDED_JOURNEY_SUMMARIES.find(j => j.id !== "turning_18_soon")!;
-    const card = screen.getByText(otherJourney.title);
+    const card = screen.getByRole("button", { name: new RegExp(otherJourney.title, "i") });
     fireEvent.click(card);
 
     expect(screen.getByText(otherJourney.title)).toBeDefined();

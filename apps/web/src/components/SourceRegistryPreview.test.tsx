@@ -49,8 +49,8 @@ describe('SourceRegistryPreview', () => {
 
   it('renders freshness status with human-readable labels', () => {
     render(<SourceRegistryPreview registry={mockRegistry} />);
-    expect(screen.getByText('Verified', { selector: '.badge' })).toBeInTheDocument();
-    expect(screen.getByText('Review due', { selector: '.badge' })).toBeInTheDocument();
+    expect(screen.getByLabelText(/freshness: verified/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/freshness: review due/i)).toBeInTheDocument();
   });
 
   it('renders helper text for freshness states', () => {
@@ -65,7 +65,7 @@ describe('SourceRegistryPreview', () => {
 
   it('does not imply review-due sources are verified', () => {
     render(<SourceRegistryPreview registry={mockRegistry} />);
-    const reviewDueElement = screen.getByText('Review due', { selector: '.badge' });
+    const reviewDueElement = screen.getByLabelText(/freshness: review due/i);
     expect(reviewDueElement).not.toHaveClass('badge-fresh');
     expect(reviewDueElement).toHaveClass('badge-stale');
   });

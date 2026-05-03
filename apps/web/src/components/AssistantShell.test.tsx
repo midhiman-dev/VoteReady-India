@@ -130,7 +130,7 @@ describe('AssistantShell', () => {
     });
 
     // Click Save
-    const saveBtn = screen.getByRole('button', { name: /save locally/i });
+    const saveBtn = screen.getByRole('button', { name: /save response locally/i });
     fireEvent.click(saveBtn);
 
     expect(saveGuidanceItem).toHaveBeenCalled();

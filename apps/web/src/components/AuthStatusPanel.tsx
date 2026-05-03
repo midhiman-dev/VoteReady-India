@@ -21,42 +21,48 @@ export const AuthStatusPanel: React.FC = () => {
   }, [authStatus.providerMode, authStatus.cloudSyncActive, appCheckStatus.enabled]);
 
   return (
-    <div className="card auth-status-panel" id="auth-status-panel">
+    <section className="card auth-status-panel" id="auth-status-panel" aria-labelledby="auth-status-title">
       <div className="panel-header">
-        <h2>Account & Sync</h2>
-        <span className="auth-status-badge">{authStatus.statusLabel}</span>
+        <h2 id="auth-status-title">Account & Sync</h2>
+        <span 
+          className="auth-status-badge"
+          role="status"
+          aria-label={`Current status: ${authStatus.statusLabel}`}
+        >
+          {authStatus.statusLabel}
+        </span>
       </div>
 
       <div className="auth-content">
-        <div className="auth-inactive-note" id="sign-in-inactive-message">
+        <div className="auth-inactive-note" id="sign-in-inactive-message" role="note">
           <p>
             <span className="label">Sign-in Inactive</span>
             Account-based features are not yet active. You do not need to sign in to use VoteReady India.
           </p>
         </div>
 
-        <div className="sync-inactive-note" id="cloud-sync-inactive-message">
+        <div className="sync-inactive-note" id="cloud-sync-inactive-message" role="note">
           <p>
             <span className="label">Cloud Sync Inactive</span>
             Cloud synchronization is currently disabled. All your saved guidance and preferences are stored locally on this device.
           </p>
         </div>
 
-        <div className="security-shell-note" id="app-check-status-message">
+        <div className="security-shell-note" id="app-check-status-message" role="note">
           <p>
             <span className="label">Security Readiness</span>
             {appCheckStatus.message}
           </p>
         </div>
 
-        <div className="dev-note">
+        <div className="dev-note" role="note">
           <p>
             <strong>Note:</strong> We do not collect your email, name, or phone number. 
             VoteReady India is designed to be local-first and privacy-preserving.
           </p>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

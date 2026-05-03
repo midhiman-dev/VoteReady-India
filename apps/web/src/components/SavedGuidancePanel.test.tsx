@@ -48,9 +48,9 @@ describe("SavedGuidancePanel", () => {
   it("renders list of saved items", () => {
     vi.mocked(storage.getSavedGuidance).mockReturnValue(mockItems);
     render(<SavedGuidancePanel />);
-    expect(screen.getByText("Test Question 1")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Test Question 1" })).toBeInTheDocument();
     expect(screen.getByText("Summary 1")).toBeInTheDocument();
-    expect(screen.getByText(/answered/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/status: answered/i)).toBeInTheDocument();
   });
 
   it("calls removeSavedGuidanceItem when remove is clicked", () => {
@@ -65,7 +65,7 @@ describe("SavedGuidancePanel", () => {
     vi.mocked(storage.getSavedGuidance).mockReturnValue(mockItems);
     vi.spyOn(window, 'confirm').mockReturnValue(true);
     render(<SavedGuidancePanel />);
-    const clearBtn = screen.getByRole("button", { name: /Clear All/i });
+    const clearBtn = screen.getByRole("button", { name: /Clear all saved guidance items/i });
     fireEvent.click(clearBtn);
     expect(storage.clearAllSavedGuidance).toHaveBeenCalled();
   });
@@ -74,7 +74,7 @@ describe("SavedGuidancePanel", () => {
     vi.mocked(storage.getSavedGuidance).mockReturnValue(mockItems);
     vi.spyOn(window, 'confirm').mockReturnValue(false);
     render(<SavedGuidancePanel />);
-    const clearBtn = screen.getByRole("button", { name: /Clear All/i });
+    const clearBtn = screen.getByRole("button", { name: /Clear all saved guidance items/i });
     fireEvent.click(clearBtn);
     expect(storage.clearAllSavedGuidance).not.toHaveBeenCalled();
   });

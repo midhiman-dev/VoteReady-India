@@ -29,22 +29,26 @@ const getFreshnessHelperText = (status: SourceFreshnessStatus): string => {
 
 const SourceRegistryPreview: React.FC<SourceRegistryPreviewProps> = ({ registry }) => {
   return (
-    <div className="card">
-      <h2>Source Registry Preview</h2>
+    <section className="card" aria-labelledby="source-registry-title">
+      <h2 id="source-registry-title">Source Registry Preview</h2>
 
-      <div className="dev-note" style={{ marginBottom: '1.5rem' }}>
+      <div className="dev-note" role="note" style={{ marginBottom: '1.5rem' }}>
         <p><strong>Important Note:</strong> This is a source registry metadata preview only. It does not provide procedural election guidance (such as exact dates, eligibility rules, or polling instructions).</p>
         <p style={{ marginTop: '0.5rem' }}>Sources labeled as <strong>Review due</strong> require manual review before their procedural data can be used in active guidance.</p>
       </div>
 
       <p><span className="label">Total Sources:</span> {registry.count}</p>
 
-      <div className="source-list">
+      <div className="source-list" role="list">
         {registry.sources.map(source => (
-          <div key={source.id} className="source-item">
+          <article key={source.id} className="source-item" role="listitem">
             <span className="source-title">{source.title}</span>
             <div className="source-meta" style={{ marginTop: '0.5rem' }}>
-              <span className={`badge ${source.freshnessStatus === 'verified' ? 'badge-fresh' : 'badge-stale'}`}>
+              <span 
+                className={`badge ${source.freshnessStatus === 'verified' ? 'badge-fresh' : 'badge-stale'}`}
+                role="status"
+                aria-label={`Freshness: ${getFreshnessLabel(source.freshnessStatus)}`}
+              >
                 {getFreshnessLabel(source.freshnessStatus)}
               </span>
               <span className="freshness-helper">
@@ -54,14 +58,14 @@ const SourceRegistryPreview: React.FC<SourceRegistryPreviewProps> = ({ registry 
                 {source.sourceType.replaceAll('_', ' ')} • {source.jurisdictionLevel.replaceAll('_', ' ')}
               </span>
             </div>
-          </div>
+          </article>
         ))}
       </div>
 
-      <p style={{ fontSize: '0.8rem', marginTop: '1rem', fontStyle: 'italic', color: '#718096' }}>
+      <p style={{ fontSize: '0.8rem', marginTop: '1rem', fontStyle: 'italic', color: '#718096' }} role="note">
         Note: Metadata preview only. These records represent approved official sources.
       </p>
-    </div>
+    </section>
   );
 };
 
