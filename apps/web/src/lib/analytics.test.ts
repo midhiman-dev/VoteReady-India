@@ -10,7 +10,7 @@ vi.mock('firebase/analytics', () => ({
 }));
 
 vi.mock('./firebase', () => ({
-  getAnalyticsInstance: vi.fn(),
+  getAnalyticsInstance: vi.fn().mockResolvedValue({}),
 }));
 
 describe('analytics sanitization', () => {
@@ -32,24 +32,67 @@ describe('analytics sanitization', () => {
     expect((sanitized as any).userQuestion).toBeUndefined();
   });
 
+  it('explicitly strips raw question and answer text fields', () => {
+    const payload = {
+      question: 'How do I vote for X?',
+      answer: 'This is a detailed answer.',
+      language: 'hindi'
+    };
+    const sanitized = sanitizePayload(payload);
+    expect((sanitized as any).question).toBeUndefined();
+    expect((sanitized as any).answer).toBeUndefined();
+    expect(sanitized.language).toBe('hindi');
+  });
+
   it('handles empty or undefined payload', () => {
     expect(sanitizePayload({})).toEqual({});
   });
 });
 
 describe('trackEvent safety', () => {
-  it('does not log event if analytics is disabled', async () => {
-    // This is tricky because trackEvent is void and uses internal config
-    // But we can verify it doesn't call getAnalyticsInstance
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('sanitizes data before calling logEvent', async () => {
+    // Set env mock via the config helper's perspective
+    const mockLogEvent = vi.mocked(firebaseAnalytics.logEvent);
+    const mockAnalytics = { app: {} };
+    vi.mocked(getAnalyticsInstance).mockResolvedValue(mockAnalytics as any);
+
+    // We can't easily mock import.meta.env directly in vitest without setup
+    // But trackEvent uses getAnalyticsConfig which uses import.meta.env
+    // We can mock getAnalyticsConfig or the env directly if we use vi.stubEnv
+    vi.stubEnv('VITE_ANALYTICS_ENABLED', 'true');
+
+    trackEvent('mode_changed', { 
+      explanationMode: 'detailed', 
+      userQuery: 'private question' 
+    } as any);
+
+    // Wait for the promise in trackEvent
+    await vi.waitFor(() => {
+      expect(mockLogEvent).toHaveBeenCalledWith(
+        mockAnalytics,
+        'mode_changed',
+        expect.objectContaining({ explanationMode: 'detailed' })
+      );
+    });
     
-    // Set env mock
-    const originalEnv = import.meta.env.VITE_ANALYTICS_ENABLED;
-    import.meta.env.VITE_ANALYTICS_ENABLED = 'false';
+    // Check that userQuery was stripped
+    const callArgs = mockLogEvent.mock.calls[0][2];
+    expect(callArgs?.userQuery).toBeUndefined();
+
+    vi.unstubAllEnvs();
+  });
+
+  it('does not log event if analytics is disabled', async () => {
+    vi.stubEnv('VITE_ANALYTICS_ENABLED', 'false');
 
     trackEvent('assistant_question_submitted', { language: 'english' });
     
     expect(getAnalyticsInstance).not.toHaveBeenCalled();
     
-    import.meta.env.VITE_ANALYTICS_ENABLED = originalEnv;
+    vi.unstubAllEnvs();
   });
 });

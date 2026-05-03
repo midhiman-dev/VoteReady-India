@@ -210,5 +210,48 @@ describe('orchestrateAssistantResponse', () => {
 
       expect(response.status).toBe('out_of_scope');
     });
+
+    it('should fall back to safe shell on Gemini timeout', async () => {
+      const request: AssistantRequest = {
+        question: 'What is VoteReady India?',
+        language: 'english',
+        explanationMode: 'simple',
+      };
+
+      // Mock a timeout error (which we expect geminiClient to throw if configured)
+      vi.mocked(geminiClient.callGemini).mockRejectedValue(new Error('Gemini request timed out after 1000ms'));
+
+      const response = await orchestrateAssistantResponse({ request });
+
+      expect(response.status).toBe('answered');
+      expect(response.answerBlocks[0].content).toContain('is connected'); // Fallback content
+      expect(geminiClient.callGemini).toHaveBeenCalled();
+    });
+  });
+
+  describe('Grounding Failures', () => {
+    it('should return cannot_verify if no sources are available in the repository', async () => {
+      const request: AssistantRequest = {
+        question: 'Generic question',
+        language: 'english',
+        explanationMode: 'simple',
+      };
+
+      // We need to mock sourceRepository via sourceGrounding or directly if it's imported
+      // In orchestrator.ts, it imports getSourceGroundingContext from sourceGrounding.js
+      const sourceGrounding = await import('./sourceGrounding.js');
+      vi.spyOn(sourceGrounding, 'getSourceGroundingContext').mockResolvedValueOnce({
+        status: 'no_sources_available',
+        sourceCount: 0,
+        sources: [],
+        fragments: [],
+        notes: ['No sources in DB'],
+      });
+
+      const response = await orchestrateAssistantResponse({ request });
+
+      expect(response.status).toBe('cannot_verify');
+      expect(response.answerBlocks[0].content).toContain('verify');
+    });
   });
 });

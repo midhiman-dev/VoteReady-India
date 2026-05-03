@@ -109,11 +109,50 @@ describe('SourceRepository', () => {
 
       expect(mockCollection.get).toHaveBeenCalledTimes(2);
     });
+
+    it('should explicitly use static seeds if getFirestore() returns null (simulating missing config)', async () => {
+      vi.mocked(firebaseConfig.getFirestore).mockReturnValue(null);
+      const registry = await sourceRepository.getSourceRegistry();
+      expect(registry).toEqual(INITIAL_SOURCE_REGISTRY);
+      expect(registry.length).toBeGreaterThan(0);
+    });
   });
 
   describe('getAllFragments', () => {
     it('should return static fragments when Firestore is disabled', async () => {
       vi.mocked(firebaseConfig.getFirestore).mockReturnValue(null);
+      const fragments = await sourceRepository.getAllFragments();
+      expect(fragments).toEqual(SAFE_DEMO_SOURCE_FRAGMENTS);
+    });
+
+    it('should return Firestore fragments when available', async () => {
+      const mockDocs = [
+        { data: () => ({ id: 'fs-frag-1', sourceId: 'src-1', content: 'Firestore Fragment' }) }
+      ];
+      const mockSnapshot = { empty: false, docs: mockDocs };
+      const mockCollection = {
+        get: vi.fn().mockResolvedValue(mockSnapshot)
+      };
+      const mockDb = {
+        collection: vi.fn().mockReturnValue(mockCollection)
+      };
+      vi.mocked(firebaseConfig.getFirestore).mockReturnValue(mockDb as any);
+
+      const fragments = await sourceRepository.getAllFragments();
+      expect(fragments).toHaveLength(1);
+      expect(fragments[0].id).toBe('fs-frag-1');
+    });
+
+    it('should fall back to static fragments when Firestore collection is empty', async () => {
+      const mockSnapshot = { empty: true, docs: [] };
+      const mockCollection = {
+        get: vi.fn().mockResolvedValue(mockSnapshot)
+      };
+      const mockDb = {
+        collection: vi.fn().mockReturnValue(mockCollection)
+      };
+      vi.mocked(firebaseConfig.getFirestore).mockReturnValue(mockDb as any);
+
       const fragments = await sourceRepository.getAllFragments();
       expect(fragments).toEqual(SAFE_DEMO_SOURCE_FRAGMENTS);
     });
