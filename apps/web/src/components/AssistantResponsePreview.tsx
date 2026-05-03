@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import { AssistantResponse } from '@voteready/shared';
 import { IntentResult } from '../lib/intentDetector';
+import { trackEvent } from '../lib/analytics';
 
 interface Props {
   response: AssistantResponse;
@@ -205,6 +207,21 @@ function AnswerBlocks({
 }
 
 export default function AssistantResponsePreview({ response, question, intent }: Props) {
+  useEffect(() => {
+    if (response.sources.length > 0) {
+      // Track one event for the view, with metadata about types
+      const sourceTypes = Array.from(new Set(response.sources.map(s => s.sourceType))).join(',');
+      const freshnessStates = Array.from(new Set(response.sources.map(s => s.freshnessStatus))).join(',');
+      
+      trackEvent('source_card_viewed', {
+        sourceCount: response.sources.length,
+        sourceType: sourceTypes,
+        freshnessState: freshnessStates,
+        responseStatus: response.status
+      });
+    }
+  }, [response.id]);
+
   const freshness = response.freshnessSummary
     ? getFreshness(response.freshnessSummary.status)
     : null;

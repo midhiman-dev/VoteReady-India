@@ -6,7 +6,9 @@
 export type AnalyticsEventName =
   | 'assistant_question_submitted'
   | 'assistant_response_received'
-  | 'assistant_response_saved'
+  | 'guidance_saved'
+  | 'source_card_viewed'
+  | 'mode_changed'
   | 'saved_guidance_removed'
   | 'saved_guidance_cleared'
   | 'guided_journey_selected'
@@ -36,6 +38,9 @@ export interface AnalyticsEventPayload {
   signedIn?: boolean;
   appCheckEnabled?: boolean;
   remindersEnabled?: boolean;
+  intentCategory?: string;
+  sourceType?: string;
+  freshnessState?: string;
   preferredChannelPlaceholder?: string;
   timingPreferencePlaceholder?: string;
 }

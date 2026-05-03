@@ -82,7 +82,7 @@ export default function AssistantShell({ onItemSaved }: AssistantShellProps) {
     setIsSaved(true);
     setSaveConfirmed(true);
 
-    trackEvent('assistant_response_saved', {
+    trackEvent('guidance_saved', {
       language: response.language,
       explanationMode: response.explanationMode,
       responseStatus: response.status,
@@ -113,6 +113,7 @@ export default function AssistantShell({ onItemSaved }: AssistantShellProps) {
       trackEvent('assistant_question_submitted', {
         language,
         explanationMode,
+        intentCategory: detected.intent,
       });
 
       const data = await postAssistantRequest(request);
@@ -179,7 +180,11 @@ export default function AssistantShell({ onItemSaved }: AssistantShellProps) {
             <select
               id="language"
               value={language}
-              onChange={e => setLanguage(e.target.value as LanguagePreference)}
+              onChange={e => {
+                const newLang = e.target.value as LanguagePreference;
+                setLanguage(newLang);
+                trackEvent('mode_changed', { language: newLang, explanationMode });
+              }}
             >
               {SUPPORTED_LANGUAGES.map(lang => (
                 <option key={lang} value={lang}>
@@ -196,7 +201,11 @@ export default function AssistantShell({ onItemSaved }: AssistantShellProps) {
             <select
               id="mode"
               value={explanationMode}
-              onChange={e => setExplanationMode(e.target.value as ExplanationMode)}
+              onChange={e => {
+                const newMode = e.target.value as ExplanationMode;
+                setExplanationMode(newMode);
+                trackEvent('mode_changed', { language, explanationMode: newMode });
+              }}
             >
               {SUPPORTED_EXPLANATION_MODES.map(mode => (
                 <option key={mode} value={mode}>

@@ -21,14 +21,28 @@ The current MVP build focuses on a **Safe Shell Architecture**. All core UI comp
 - **Guided Journeys Shell**: UX framework for scenario-based election guidance (e.g., "Turning 18 soon").
 - **Election Basics**: Educational content shell.
 - **Accessibility**: Core screens support keyboard navigation and screen readers.
+- **Privacy-Safe Analytics**: Firebase Analytics is active for anonymized flow tracking.
 
 ### What is Intentionally Inactive
 - **Gemini Model Calls**: Configured but inactive.
 - **Source Retrieval/Scraping**: No live scraping.
 - **Real Procedural Election Guidance**: Dates, deadlines, form instructions, eligibility rules are not active.
 - **Firebase Auth & Firestore Sync**: Platform shells are present but do not connect to a real backend. Data uses `localStorage`.
-- **App Check & Analytics**: Configuration exists but is not enforced.
+- **App Check**: Configuration exists but is not enforced.
 - **Notifications/Reminders**: Preferences save locally, but no real messages are dispatched.
+
+## Privacy & Analytics
+The application uses Firebase Analytics to understand user flows and improve the product. We strictly adhere to privacy boundaries:
+- **No PII**: We never track names, emails, or personal identifiers.
+- **No Private Content**: We never track full question text, assistant responses, or voter data.
+- **Safe Metadata Only**: We track anonymized metadata such as language choice, explanation mode, intent category, and source types.
+
+### Tracked Events
+- `assistant_question_submitted`: Tracks when a user asks a question (includes mode, language, and intent category).
+- `guidance_saved`: Tracks when a user saves a response (includes storage mode: cloud or local).
+- `source_card_viewed`: Tracks when source metadata is displayed.
+- `mode_changed`: Tracks when a user toggles language or explanation settings.
+- `auth_panel_viewed`, `sign_in_initiated`, `sign_out_initiated`: Tracks authentication flow.
 
 ## Local Setup Instructions
 
@@ -93,7 +107,7 @@ This build actively prevents:
 - Eligibility rules and polling instructions
 - Political recommendations
 - Firebase Auth sign-in and active Firestore sync
-- App Check enforcement and active analytics
+- App Check enforcement
 - Real reminders or FCM/push/email/SMS notifications
 
 ## Repo Structure
