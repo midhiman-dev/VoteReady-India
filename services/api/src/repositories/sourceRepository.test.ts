@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { sourceRepository } from './sourceRepository.js';
 import * as firebaseConfig from '../config/firebase.js';
+import { sourceCache } from './sourceCache.js';
 import { INITIAL_SOURCE_REGISTRY, SAFE_DEMO_SOURCE_FRAGMENTS } from '@voteready/shared';
 
 vi.mock('../config/firebase.js', () => ({
@@ -10,6 +11,7 @@ vi.mock('../config/firebase.js', () => ({
 describe('SourceRepository', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    sourceCache.clear();
   });
 
   describe('getSourceRegistry', () => {
@@ -68,6 +70,88 @@ describe('SourceRepository', () => {
       
       const sources = await sourceRepository.getSourceRegistry();
       expect(sources).toEqual(INITIAL_SOURCE_REGISTRY);
+    });
+
+    it('should serve registry from cache on second call, avoiding Firestore', async () => {
+      const mockDocs = [
+        { data: () => ({ id: 'cached-source', title: 'Cached Source' }) }
+      ];
+      const mockSnapshot = { empty: false, docs: mockDocs };
+      const mockCollection = {
+        get: vi.fn().mockResolvedValue(mockSnapshot)
+      };
+      const mockDb = {
+        collection: vi.fn().mockReturnValue(mockCollection)
+      };
+      vi.mocked(firebaseConfig.getFirestore).mockReturnValue(mockDb as any);
+
+      // First call: Firestore is hit
+      await sourceRepository.getSourceRegistry();
+      // Second call: should be served from cache
+      await sourceRepository.getSourceRegistry();
+
+      expect(mockCollection.get).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not cache result when Firestore throws an error', async () => {
+      const mockCollection = {
+        get: vi.fn().mockRejectedValue(new Error('Firestore error'))
+      };
+      const mockDb = {
+        collection: vi.fn().mockReturnValue(mockCollection)
+      };
+      vi.mocked(firebaseConfig.getFirestore).mockReturnValue(mockDb as any);
+
+      // First call: error, no cache set
+      await sourceRepository.getSourceRegistry();
+      // Second call: should hit Firestore again (not cached fallback)
+      await sourceRepository.getSourceRegistry();
+
+      expect(mockCollection.get).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe('getAllFragments', () => {
+    it('should return static fragments when Firestore is disabled', async () => {
+      vi.mocked(firebaseConfig.getFirestore).mockReturnValue(null);
+      const fragments = await sourceRepository.getAllFragments();
+      expect(fragments).toEqual(SAFE_DEMO_SOURCE_FRAGMENTS);
+    });
+
+    it('should serve fragments from cache on second call, avoiding Firestore', async () => {
+      const mockDocs = [
+        { data: () => ({ id: 'frag-1', sourceId: 'src-1', content: 'Cached fragment' }) }
+      ];
+      const mockSnapshot = { empty: false, docs: mockDocs };
+      const mockCollection = {
+        get: vi.fn().mockResolvedValue(mockSnapshot)
+      };
+      const mockDb = {
+        collection: vi.fn().mockReturnValue(mockCollection)
+      };
+      vi.mocked(firebaseConfig.getFirestore).mockReturnValue(mockDb as any);
+
+      // First call: Firestore is hit
+      await sourceRepository.getAllFragments();
+      // Second call: should be served from cache
+      await sourceRepository.getAllFragments();
+
+      expect(mockCollection.get).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not cache result when Firestore throws an error', async () => {
+      const mockCollection = {
+        get: vi.fn().mockRejectedValue(new Error('Firestore error'))
+      };
+      const mockDb = {
+        collection: vi.fn().mockReturnValue(mockCollection)
+      };
+      vi.mocked(firebaseConfig.getFirestore).mockReturnValue(mockDb as any);
+
+      await sourceRepository.getAllFragments();
+      await sourceRepository.getAllFragments();
+
+      expect(mockCollection.get).toHaveBeenCalledTimes(2);
     });
   });
 
