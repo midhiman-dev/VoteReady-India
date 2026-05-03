@@ -17,7 +17,7 @@ describe('geminiClient', () => {
   const mockConfig = {
     enabled: true,
     apiKeyPresent: true,
-    model: 'gemini-1.5-flash',
+    model: 'gemini-2.5-flash',
     timeoutMs: 1000,
   };
 

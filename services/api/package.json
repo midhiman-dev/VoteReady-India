@@ -5,7 +5,7 @@
   "main": "dist/server.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/server.js",
+    "start": "tsx src/server.ts",
     "dev": "tsx watch src/server.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
@@ -16,7 +16,8 @@
     "cors": "^2.8.5",
     "dotenv": "^17.4.2",
     "express": "^4.18.2",
-    "firebase-admin": "^13.8.0"
+    "firebase-admin": "^13.8.0",
+    "tsx": "*"
   },
   "devDependencies": {
     "@types/cors": "^2.8.13",
@@ -24,7 +25,6 @@
     "@types/node": "^20.0.0",
     "@types/supertest": "^2.0.12",
     "supertest": "^6.3.3",
-    "tsx": "*",
     "typescript": "^5.0.0",
     "vitest": "^1.0.0"
   }

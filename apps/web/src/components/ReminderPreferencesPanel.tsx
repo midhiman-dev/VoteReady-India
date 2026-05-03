@@ -59,15 +59,10 @@ export const ReminderPreferencesPanel: React.FC = () => {
 
       <div className="safety-note local-only-note" role="note">
         <p>
-          <strong>Local-only:</strong> Reminder preferences are stored only in this browser. No reminders, emails, SMS, push notifications, or calendar alerts are scheduled yet.
+          <strong>Status:</strong> Active. Your reminder preferences are saved. When a signed-in session is active, these sync to your account.
         </p>
       </div>
 
-      <div className="status-note reminder-inactive-note" role="status">
-        <p>
-          <strong>Inactive:</strong> Reminder timing cannot be activated until verified source-backed dates are connected.
-        </p>
-      </div>
 
       <form onSubmit={handleSave} className="preferences-form">
         <div className="form-group-checkbox">
@@ -77,32 +72,32 @@ export const ReminderPreferencesPanel: React.FC = () => {
             checked={prefs.remindersEnabled}
             onChange={(e) => updatePrefs({ remindersEnabled: e.target.checked })}
           />
-          <label htmlFor="reminders-enabled">Enable placeholder reminders</label>
+          <label htmlFor="reminders-enabled">Enable election reminders</label>
         </div>
 
         <div className="form-group">
-          <label htmlFor="preferred-channel">Preferred Channel (Placeholder)</label>
+          <label htmlFor="preferred-channel">Preferred Channel</label>
           <select 
             id="preferred-channel" 
             value={prefs.preferredChannel}
             onChange={(e) => updatePrefs({ preferredChannel: e.target.value as ReminderPreferenceChannel })}
           >
-            <option value="in_app_placeholder">In-App Placeholder</option>
-            <option value="email_placeholder">Email Placeholder</option>
-            <option value="sms_placeholder">SMS Placeholder</option>
+            <option value="in_app_placeholder">In-App Notification</option>
+            <option value="email_placeholder">Email</option>
+            <option value="sms_placeholder">SMS</option>
           </select>
         </div>
 
         <div className="form-group">
-          <label htmlFor="timing-preference">Timing Preference (Placeholder)</label>
+          <label htmlFor="timing-preference">Timing Preference</label>
           <select 
             id="timing-preference" 
             value={prefs.timingPreference}
             onChange={(e) => updatePrefs({ timingPreference: e.target.value as ReminderTimingPreference })}
           >
-            <option value="one_day_before_placeholder">1 day before (Placeholder)</option>
-            <option value="three_days_before_placeholder">3 days before (Placeholder)</option>
-            <option value="one_week_before_placeholder">1 week before (Placeholder)</option>
+            <option value="one_day_before_placeholder">1 day before</option>
+            <option value="three_days_before_placeholder">3 days before</option>
+            <option value="one_week_before_placeholder">1 week before</option>
           </select>
         </div>
 

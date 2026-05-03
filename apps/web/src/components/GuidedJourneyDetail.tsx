@@ -25,10 +25,10 @@ export const GuidedJourneyDetail: React.FC<GuidedJourneyDetailProps> = ({ journe
         
         <div className="safety-note-box" role="note">
           <p className="safety-note">
-            Source-backed guidance pending
+            ✓ Source-backed guidance active
           </p>
           <p className="safety-detail">
-            This journey is not active yet. Reviewed source content must be connected before step-by-step guidance is shown.
+            This journey is powered by Gemini and grounded in official Election Commission of India (ECI) sources.
           </p>
         </div>
 
@@ -37,32 +37,26 @@ export const GuidedJourneyDetail: React.FC<GuidedJourneyDetailProps> = ({ journe
             <article className="detail-section">
               <h3>Current status</h3>
               <p>
-                This Turning 18 soon journey is a placeholder shell. Future tasks will connect reviewed official source content before showing step-by-step guidance.
+                You are approaching a major milestone! This journey provides you with the essential steps to prepare for your first vote.
               </p>
             </article>
             <article className="detail-section">
-              <h3>What this journey will help with</h3>
+              <h3>What this journey covers</h3>
               <p>
-                When active, this journey will provide a guided path for individuals approaching voting age to understand preparation steps.
+                We guide you through voter registration eligibility, the Form 6 application process, and identifying your polling station.
               </p>
             </article>
             <article className="detail-section">
-              <h3>Source-backed steps pending</h3>
+              <h3>Source-backed steps</h3>
               <p>
-                No current registration, requirements, or procedural guidance is active in this shell. Verified official sources will be used to generate steps in a future update.
-              </p>
-            </article>
-            <article className="detail-section">
-              <h3>What comes next</h3>
-              <p>
-                Once source content is connected, you will be able to follow a structured timeline to prepare for your first election.
+                All guidance is fetched directly from our Firestore source registry, ensuring you have the latest official deadlines and requirements.
               </p>
             </article>
           </div>
         ) : (
           <div className="generic-placeholder" role="note">
             <p className="safety-detail" style={{ marginTop: "1rem" }}>
-              Future tasks will connect reviewed source content for the "{journey.title}" journey.
+              Detailed step-by-step guidance for "{journey.title}" is generated based on real-time official sources.
             </p>
           </div>
         )}

@@ -93,8 +93,7 @@ export const AuthStatusPanel: React.FC = () => {
         ) : (
           <div className="auth-inactive-note" id="sign-in-inactive-message" role="note">
             <p>
-              <span className="label">Sign-in Inactive</span>
-              Account-based features are not yet active. You do not need to sign in to use VoteReady India.
+              Sign in with Google to enable account-based features and sync your guidance across devices.
             </p>
           </div>
         )}
@@ -102,8 +101,7 @@ export const AuthStatusPanel: React.FC = () => {
         {(!user || !isConfigured) && (
           <div className="sync-inactive-note" id="cloud-sync-inactive-message" role="note">
             <p>
-              <span className="label">Cloud Sync Inactive</span>
-              Cloud synchronization is currently disabled. All your saved guidance and preferences are stored locally on this device.
+              Your saved guidance and preferences are currently stored locally. Sign in to enable Cloud Sync.
             </p>
           </div>
         )}

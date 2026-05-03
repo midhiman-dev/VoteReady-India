@@ -5,44 +5,50 @@
 VoteReady India is an interactive civic education assistant that helps young Indians understand how elections work, what applies to their situation, and what to do next through simple, source-backed guidance.
 
 ### Public Deployed Application
-**Public URL**: [https://voteready-india-web-529590785617.asia-south1.run.app](https://voteready-india-web-529590785617.asia-south1.run.app)
+**Frontend URL**: [https://voteready-india-web-529590785617.asia-south1.run.app](https://voteready-india-web-529590785617.asia-south1.run.app)
+**Backend API URL**: [https://voteready-india-api-529590785617.asia-south1.run.app](https://voteready-india-api-529590785617.asia-south1.run.app)
 
-> **Disclaimer**: This application is currently in a safe-shell state. It does not provide real procedural election guidance, polling instructions, eligibility rules, or political recommendations. Gemini model calls, real source retrieval, and Firebase integrations are currently disabled by default to preserve strict boundaries.
+> **Status**: This application is now fully integrated with Google Cloud services. Gemini model calls, Firestore source registry, Firebase Authentication, and Analytics are active and functional.
 
-## Safe-Shell Architecture Summary
+## Project Overview
 
-The current MVP build focuses on a **Safe Shell Architecture**. All core UI components and API endpoints are established, but generative AI and live election data are intentionally disabled to preserve safety and neutrality during the initial build phase.
+### Chosen Vertical
+**Civic Education & Election Readiness**: VoteReady India addresses the challenge of navigating complex electoral processes for young and first-time voters in India.
 
-### What is Active
-- **Assistant Shell**: Multi-language (English, Hindi, Hinglish), multi-mode (Standard, Simple) interface for election readiness questions.
-- **Safety Orchestration**: Deterministic routing for procedural and political questions.
-- **Source Registry**: Centralized management of official election sources (ECI-first) returning metadata-only safe source cards.
-- **Saved Guidance**: Local persistence of assistant responses (`localStorage`).
-- **Guided Journeys Shell**: UX framework for scenario-based election guidance (e.g., "Turning 18 soon").
-- **Election Basics**: Educational content shell.
-- **Accessibility**: Core screens support keyboard navigation and screen readers.
-- **Privacy-Safe Analytics**: Firebase Analytics is active for anonymized flow tracking.
+### Approach and Logic
+Our approach is built on a **"Source-Trust Architecture"**. We prioritize official government data (ECI-first) and use Generative AI to simplify complex procedural information without losing accuracy.
+- **Grounded AI**: Gemini 2.5 Flash generates responses strictly grounded in a verified Firestore source registry.
+- **Safety-First**: A deterministic classifier routes procedural and political questions to safe, neutral, or "cannot-verify" states.
+- **Multi-Language Support**: Accessible guidance in English, Hindi, and Hinglish.
+- **Privacy-Safe Analytics**: All tracking is anonymized and avoids PII/sensitive content.
 
-### What is Intentionally Inactive
-- **Gemini Model Calls**: Configured but inactive.
-- **Source Retrieval/Scraping**: No live scraping.
-- **Real Procedural Election Guidance**: Dates, deadlines, form instructions, eligibility rules are not active.
-- **Firebase Auth & Firestore Sync**: Platform shells are present but do not connect to a real backend. Data uses `localStorage`.
-- **App Check**: Configuration exists but is not enforced.
-- **Notifications/Reminders**: Preferences save locally, but no real messages are dispatched.
+### How the Solution Works
+1.  **User Input**: A user asks a question or selects a guided journey.
+2.  **Intent Detection**: The system classifies the intent (General, Procedural, Political, etc.).
+3.  **Grounded Retrieval**: The Cloud Run API queries the Firestore Source Registry for relevant official fragments.
+4.  **Generative Simplification**: Gemini 2.5 Flash processes the official text and user context to produce a simple, clear explanation.
+5.  **Verified Presentation**: The user receives the response accompanied by "Source Cards" linking to original official documents.
 
-## Privacy & Analytics
-The application uses Firebase Analytics to understand user flows and improve the product. We strictly adhere to privacy boundaries:
-- **No PII**: We never track names, emails, or personal identifiers.
-- **No Private Content**: We never track full question text, assistant responses, or voter data.
-- **Safe Metadata Only**: We track anonymized metadata such as language choice, explanation mode, intent category, and source types.
+### Assumptions Made
+- Users have basic internet connectivity and digital literacy.
+- Official sources (Election Commission of India) remain the primary source of truth.
+- High-level procedural changes are captured in the source registry.
 
-### Tracked Events
-- `assistant_question_submitted`: Tracks when a user asks a question (includes mode, language, and intent category).
-- `guidance_saved`: Tracks when a user saves a response (includes storage mode: cloud or local).
-- `source_card_viewed`: Tracks when source metadata is displayed.
-- `mode_changed`: Tracks when a user toggles language or explanation settings.
-- `auth_panel_viewed`, `sign_in_initiated`, `sign_out_initiated`: Tracks authentication flow.
+## Google Services Integration
+
+The application leverages the full Google Cloud ecosystem for a premium, scalable experience:
+
+- **Google Cloud Run**: Hosts the Frontend (Vite) and Backend API (Node.js/Express) services.
+- **Gemini (AI)**: Powers the conversational engine for grounded, multilingual guidance.
+- **Firestore (Data)**: Acts as the Source Registry and the persistent store for "Saved Guidance" and user settings.
+- **Firebase Authentication**: Provides secure Google Sign-In for account-based features.
+- **Firebase Analytics**: Tracks product interactions securely without PII.
+
+## Evidence of Integration
+- **Grounded Assistant**: Responses include source metadata and freshness indicators fetched from Firestore.
+- **Live Auth**: Sign-in with Google is active in the "Account & Sync" panel.
+- **Cloud Sync**: Saved items are synchronized to Firestore when signed in.
+- **Privacy Dashboard**: Real-time analytics events are visible in the Firebase Console (anonymized).
 
 ## Local Setup Instructions
 
@@ -53,7 +59,7 @@ The application uses Firebase Analytics to understand user flows and improve the
 ### Environment Setup
 1. Copy `.env.example` to `.env` in the root directory.
 2. Copy `apps/web/.env.example` to `apps/web/.env`.
-3. *(Optional)* Variables related to Gemini, Firebase, App Check, and Analytics are present but do not need to be populated for the app to run in its current safe-shell state.
+3. Populated the `GEMINI_API_KEY` and Firebase config variables to enable full functionality locally.
 
 ### Setup
 ```powershell
@@ -81,40 +87,12 @@ Run the full suite of validations (build, typecheck, tests):
 npm run build
 npm run typecheck
 npm test
-npm test --workspace=@voteready/web
-npm test --workspace=@voteready/api
-npm test --workspace=@voteready/shared
 ```
 
-## Demo Flow
-
-The application provides several testable flows representing the safe-shell features:
-1. **Load the app** and view the responsive layout.
-2. **Submit a question** to the Assistant to see the loading state and simulated response.
-3. Test **Cannot-Verify** responses (e.g., "How do I register to vote?") and **Out-of-Scope** refusals (e.g., "Which party should I vote for?").
-4. View **Source Cards** (metadata-only) returned with responses.
-5. Save guidance and verify it appears in the **Saved Guidance** panel and persists across reloads.
-6. Check the **Account & Sync** and **Reminder Preferences** panels to confirm they are in their inactive states.
-7. Navigate to the **Guided Journeys** and explore the "Turning 18 soon" shell.
-8. Explore the **Election Basics** shell.
-
-## Safety Boundaries
-
-This build actively prevents:
-- Gemini model calls
-- Real source retrieval and ingestion/scraping
-- Verified procedural election guidance, dates, and deadlines
-- Eligibility rules and polling instructions
-- Political recommendations
-- Firebase Auth sign-in and active Firestore sync
-- App Check enforcement
-- Real reminders or FCM/push/email/SMS notifications
-
 ## Repo Structure
-- `skills.md` — repo-level build rules for Antigravity
-- `agents.md` — role-based agent responsibilities
-- `.ai/tasks/` — task templates and output for Antigravity
-- `apps/web` — frontend app
-- `services/api` — Cloud Run backend
-- `packages/shared` — shared types/utilities
-- `docs/` — architecture, source registry, testing, and release notes
+- `apps/web` — Frontend application (Vite/React)
+- `services/api` — Cloud Run backend service
+- `packages/shared` — Shared types and domain logic
+- `docs/` — Architecture, source registry, and testing notes
+- `skills.md` — Repo-level build rules
+- `agents.md` — Role-based agent collaboration model

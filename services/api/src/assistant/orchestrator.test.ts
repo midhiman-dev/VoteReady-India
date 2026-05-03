@@ -14,7 +14,7 @@ describe('orchestrateAssistantResponse', () => {
     vi.mocked(geminiConfig.getGeminiConfig).mockReturnValue({
       enabled: false,
       apiKeyPresent: false,
-      model: 'gemini-1.5-flash',
+      model: 'gemini-2.5-flash',
       timeoutMs: 15000
     });
   });
@@ -145,7 +145,7 @@ describe('orchestrateAssistantResponse', () => {
       vi.mocked(geminiConfig.getGeminiConfig).mockReturnValue({
         enabled: true,
         apiKeyPresent: true,
-        model: 'gemini-1.5-flash',
+        model: 'gemini-2.5-flash',
         timeoutMs: 15000
       });
     });

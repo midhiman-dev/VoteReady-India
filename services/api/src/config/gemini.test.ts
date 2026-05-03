@@ -28,7 +28,7 @@ describe('Gemini Configuration', () => {
 
   it('Uses default model when model env var is absent', () => {
     const config = getGeminiConfig({});
-    expect(config.model).toBe('gemini-1.5-flash');
+    expect(config.model).toBe('gemini-2.5-flash');
   });
 
   it('Uses default timeout when timeout env var is absent', () => {

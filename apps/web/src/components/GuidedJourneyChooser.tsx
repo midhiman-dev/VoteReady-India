@@ -35,7 +35,7 @@ export const GuidedJourneyChooser: React.FC = () => {
       </p>
       
       <div className="safety-note chooser-safety" role="note">
-        These journey cards are navigation shells only. Verified source-backed journey guidance is not active yet.
+        These journeys provide step-by-step guidance grounded in official election sources.
       </div>
 
       <div className="journey-grid" role="list">

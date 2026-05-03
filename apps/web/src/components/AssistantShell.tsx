@@ -143,10 +143,9 @@ export default function AssistantShell({ onItemSaved }: AssistantShellProps) {
     <div className="card assistant-card">
       <h2>Ask VoteReady</h2>
       <div className="assistant-safety-note" role="note">
-        <span className="safety-icon">🔗</span>
+        <span className="safety-icon">✨</span>
         <p>
-          I'm connected, but I can't verify real election guidance yet. I'll let you know what I
-          can and can't help with.
+          I'm powered by Google Gemini and official election sources. I'll help you navigate the process with simple, grounded guidance.
         </p>
       </div>
 

@@ -9,7 +9,7 @@ export function getGeminiConfig(env?: NodeJS.ProcessEnv): GeminiConfig {
   const finalEnv = env || process.env;
   const enabled = finalEnv.GEMINI_ENABLED === 'true';
   const apiKeyPresent = !!finalEnv.GEMINI_API_KEY && finalEnv.GEMINI_API_KEY.trim().length > 0;
-  const model = finalEnv.GEMINI_MODEL || 'gemini-1.5-flash';
+  const model = finalEnv.GEMINI_MODEL || 'gemini-2.5-flash';
   
   let timeoutMs = 15000;
   if (finalEnv.GEMINI_TIMEOUT_MS) {
