@@ -31,6 +31,7 @@ export interface AnalyticsEventPayload {
   storageMode?: 'local' | 'cloud';
   cloudSyncActive?: boolean;
   authMode?: string;
+  appCheckEnabled?: boolean;
   remindersEnabled?: boolean;
   preferredChannelPlaceholder?: string;
   timingPreferencePlaceholder?: string;
