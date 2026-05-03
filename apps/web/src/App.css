@@ -1,15 +1,32 @@
 .app-shell {
-  max-width: 800px;
+  max-width: 600px; /* narrower, mobile-first width */
   margin: 0 auto;
-  padding: 2rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   text-align: left;
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   color: #1a1a1a;
+  background-color: #f8fafc;
+  position: relative;
+  box-shadow: 0 0 20px rgba(0,0,0,0.05);
 }
 
-header {
-  margin-bottom: 3rem;
+.app-header {
+  padding: 2rem 1.5rem 1.5rem;
   text-align: center;
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.app-main {
+  flex: 1;
+  padding: 1.5rem;
+  padding-bottom: calc(5rem + env(safe-area-inset-bottom, 1rem));
+  overflow-y: auto;
 }
 
 h1 {
@@ -125,11 +142,79 @@ h1 {
   color: #744210;
 }
 
-footer {
-  margin-top: 4rem;
-  text-align: center;
-  color: #888;
-  font-size: 0.9rem;
+.tab-content {
+  animation: fadeIn 0.2s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.settings-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.settings-title {
+  margin: 0;
+  font-size: 1.75rem;
+  color: #1e293b;
+}
+
+.settings-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 600px;
+  background: white;
+  display: flex;
+  justify-content: space-around;
+  padding: 0.5rem 0 calc(0.5rem + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid #e2e8f0;
+  box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.05);
+  z-index: 20;
+}
+
+.nav-btn {
+  background: none;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  color: #64748b;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.5rem;
+  flex: 1;
+  transition: all 0.2s;
+  border-radius: 8px;
+}
+
+.nav-btn:hover {
+  color: #3b82f6;
+  background: #f8fafc;
+}
+
+.nav-btn.active {
+  color: #3b82f6;
+}
+
+.nav-icon {
+  font-size: 1.25rem;
+}
+
+.nav-btn.active .nav-icon {
+  transform: translateY(-2px);
 }
 
 .content-container {

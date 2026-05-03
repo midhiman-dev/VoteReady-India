@@ -45,7 +45,7 @@ describe('AssistantResponsePreview', () => {
 
   it('renders freshness summary and disclaimer', () => {
     render(<AssistantResponsePreview response={mockResponse} />);
-    expect(screen.getByText('Data is fresh.')).toBeInTheDocument();
+    expect(screen.getByText(/Data is fresh\./)).toBeInTheDocument();
     expect(screen.getByText('Use at your own risk.')).toBeInTheDocument();
   });
 
@@ -73,7 +73,7 @@ describe('AssistantResponsePreview', () => {
     expect(screen.getByText('Sources returned: 1')).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /source metadata/i })).toBeInTheDocument();
     expect(screen.getByText('Test Source')).toBeInTheDocument();
-    expect(screen.getByLabelText(/source freshness: review due/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/source freshness: ⚠️ review due/i)).toBeInTheDocument();
     expect(screen.getByRole('note', { name: /source safety note/i })).toBeInTheDocument();
   });
 });
