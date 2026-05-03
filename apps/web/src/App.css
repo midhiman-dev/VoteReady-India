@@ -798,5 +798,64 @@ textarea:focus, select:focus {
   margin-top: 1.5rem;
   font-size: 0.75rem;
   color: #999;
-  text-align: right;
+}
+
+/* Auth Status Panel Styles */
+.auth-status-panel {
+  border-left: 4px solid #6b7280;
+}
+
+.auth-status-panel .panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.auth-status-panel .panel-header h2 {
+  margin: 0;
+}
+
+.auth-inactive-note {
+  border-left: 4px solid #9ca3af;
+  background-color: #f3f4f6;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+}
+
+.auth-inactive-note p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #4b5563;
+}
+
+.auth-inactive-note .label,
+.sync-inactive-note .label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.sync-inactive-note {
+  border-left: 4px solid #cbd5e1;
+  background-color: #f8fafc;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+}
+
+.sync-inactive-note p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #64748b;
+}
+
+.auth-status-badge {
+  font-size: 0.75rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  background: #e5e7eb;
+  color: #374151;
+  font-weight: 600;
 }
