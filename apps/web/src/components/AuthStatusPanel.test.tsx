@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { AuthStatusPanel } from './AuthStatusPanel';
 
-// Mock the status helper
+// Mock the status helpers
 vi.mock('../lib/firebaseAuthStatus', () => ({
   getFirebaseAuthStatus: vi.fn(() => ({
     enabled: false,
@@ -10,6 +10,16 @@ vi.mock('../lib/firebaseAuthStatus', () => ({
     statusLabel: 'Auth disabled by default',
     signInActive: false,
     cloudSyncActive: false
+  }))
+}));
+
+vi.mock('../lib/appCheckStatus', () => ({
+  getAppCheckStatus: vi.fn(() => ({
+    enabled: false,
+    configured: false,
+    provider: 'disabled',
+    enforcementActive: false,
+    message: 'App Check: Not active yet'
   }))
 }));
 
@@ -29,6 +39,12 @@ describe('AuthStatusPanel', () => {
     render(<AuthStatusPanel />);
     expect(screen.getByText(/Cloud Sync Inactive/i)).toBeInTheDocument();
     expect(screen.getByText(/Cloud synchronization is currently disabled/i)).toBeInTheDocument();
+  });
+
+  it('shows App Check inactive messaging', () => {
+    render(<AuthStatusPanel />);
+    expect(screen.getByText(/Security Readiness/i)).toBeInTheDocument();
+    expect(screen.getByText(/App Check: Not active yet/i)).toBeInTheDocument();
   });
 
   it('displays the status label from the helper', () => {
