@@ -24,8 +24,28 @@ The following boundaries are strictly enforced in this build:
 - **No PII Collection**: Local-first storage only. Auth and cloud sync are inactive.
 
 ## Evidence Notes
-**Current State**: Validation in progress.
-Evidence status: command output to be pasted after local verification.
+**Current State**: Validation Passed.
+
+Test evidence:
+```
+> voteready-india@0.1.0 test
+> npm test --workspaces --if-present
+
+> @voteready/web@0.1.0 test
+> vitest run
+ Test Files  17 passed (17)
+      Tests  97 passed (97)
+
+> @voteready/api@0.1.0 test
+> vitest run
+ Test Files  4 passed (4)
+      Tests  39 passed (39)
+
+> @voteready/shared@0.1.0 test
+> vitest run
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+```
 
 ## Submission Readiness
 The repository is structured to demonstrate:
