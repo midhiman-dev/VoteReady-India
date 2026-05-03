@@ -1,16 +1,5 @@
-import { 
-  collection, 
-  doc, 
-  setDoc, 
-  getDocs, 
-  deleteDoc, 
-  query, 
-  where, 
-  orderBy,
-  writeBatch
-} from 'firebase/firestore';
 import { SavedGuidanceItem } from '@voteready/shared';
-import { getFirebaseClient } from './firebase';
+import { getFirestoreInstance } from './firebase';
 import { getFirebaseClientConfigStatus } from './firebaseConfig';
 import * as localStore from './savedGuidanceStorage';
 
@@ -76,13 +65,14 @@ export async function saveGuidance(item: SavedGuidanceItem, userId?: string): Pr
     return;
   }
 
-  const { db } = getFirebaseClient();
+  const db = await getFirestoreInstance();
   if (!db) {
     localStore.saveGuidanceItem(item);
     return;
   }
 
   try {
+    const { doc, setDoc } = await import('firebase/firestore');
     const docRef = doc(db, COLLECTION_NAME, item.id);
     await setDoc(docRef, {
       ...item,
@@ -104,12 +94,13 @@ export async function fetchSavedGuidance(userId?: string): Promise<SavedGuidance
     return localStore.getSavedGuidance();
   }
 
-  const { db } = getFirebaseClient();
+  const db = await getFirestoreInstance();
   if (!db) {
     return localStore.getSavedGuidance();
   }
 
   try {
+    const { collection, query, where, orderBy, getDocs } = await import('firebase/firestore');
     const q = query(
       collection(db, COLLECTION_NAME),
       where('userId', '==', userId),
@@ -133,13 +124,14 @@ export async function removeSavedGuidance(id: string, userId?: string): Promise<
     return;
   }
 
-  const { db } = getFirebaseClient();
+  const db = await getFirestoreInstance();
   if (!db) {
     localStore.removeSavedGuidanceItem(id);
     return;
   }
 
   try {
+    const { doc, deleteDoc } = await import('firebase/firestore');
     await deleteDoc(doc(db, COLLECTION_NAME, id));
   } catch (error) {
     console.error('Firestore delete failed', error);
@@ -157,13 +149,14 @@ export async function clearSavedGuidance(userId?: string): Promise<void> {
     return;
   }
 
-  const { db } = getFirebaseClient();
+  const db = await getFirestoreInstance();
   if (!db) {
     localStore.clearAllSavedGuidance();
     return;
   }
 
   try {
+    const { collection, query, where, getDocs, writeBatch } = await import('firebase/firestore');
     const q = query(
       collection(db, COLLECTION_NAME),
       where('userId', '==', userId)

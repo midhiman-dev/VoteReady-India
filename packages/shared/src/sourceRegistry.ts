@@ -1,4 +1,4 @@
-import { SourceRecord } from "./source";
+import { SourceRecord } from "./source.js";
 
 /**
  * Static seed of approved official source surfaces for VoteReady India.

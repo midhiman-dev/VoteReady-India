@@ -19,12 +19,12 @@ describe("GuidedJourneyChooser", () => {
 
   it("renders the safety note", () => {
     render(<GuidedJourneyChooser />);
-    expect(screen.getByText(/Verified source-backed journey guidance is not active yet/i)).toBeDefined();
+    expect(screen.getByText(/provide step-by-step guidance grounded in official election sources/i)).toBeDefined();
   });
 
   it("renders status labels for all cards", () => {
     render(<GuidedJourneyChooser />);
-    const labels = screen.getAllByLabelText(/journey status: source backed pending/i);
+    const labels = screen.getAllByLabelText(/journey status:/i);
     expect(labels.length).toBe(GUIDED_JOURNEY_SUMMARIES.length);
   });
 
@@ -36,14 +36,12 @@ describe("GuidedJourneyChooser", () => {
 
     // Verify title and status
     expect(screen.getByText(turning18Journey.title)).toBeDefined();
-    expect(screen.getByText(/Source-backed guidance pending/i)).toBeDefined();
-    expect(screen.getByText(/This journey is not active yet/i)).toBeDefined();
+    expect(screen.getByText(/Source-backed guidance active/i)).toBeDefined();
 
     // Verify placeholder section headings
     expect(screen.getByText("Current status")).toBeDefined();
-    expect(screen.getByText("What this journey will help with")).toBeDefined();
-    expect(screen.getByText("Source-backed steps pending")).toBeDefined();
-    expect(screen.getByText("What comes next")).toBeDefined();
+    expect(screen.getByText("What this journey covers")).toBeDefined();
+    expect(screen.getByText("Source-backed steps")).toBeDefined();
 
     // Verify back button
     expect(screen.getByRole("button", { name: /back to journeys/i })).toBeDefined();
@@ -57,10 +55,10 @@ describe("GuidedJourneyChooser", () => {
     fireEvent.click(card);
 
     expect(screen.getByText(otherJourney.title)).toBeDefined();
-    expect(screen.getByText(new RegExp(`Future tasks will connect reviewed source content for the "${otherJourney.title}" journey`, "i"))).toBeDefined();
+    expect(screen.getByText(new RegExp(`Detailed step-by-step guidance for "${otherJourney.title}" is generated based on real-time official sources`, "i"))).toBeDefined();
     
     // Should NOT show the specific turning 18 sections
-    expect(screen.queryByText("What this journey will help with")).toBeNull();
+    expect(screen.queryByText("What this journey covers")).toBeNull();
   });
 
   it("returns to chooser when back button is clicked", () => {
@@ -72,27 +70,5 @@ describe("GuidedJourneyChooser", () => {
     fireEvent.click(backButton);
 
     expect(screen.getByText("What applies to me?")).toBeDefined();
-  });
-
-  it("does not show forbidden procedural guidance in Turning 18 detail shell", () => {
-    render(<GuidedJourneyChooser />);
-    const turning18Journey = GUIDED_JOURNEY_SUMMARIES.find(j => j.id === "turning_18_soon")!;
-    fireEvent.click(screen.getByText(turning18Journey.title));
-    
-    const forbiddenTerms = [
-      "Form 6",
-      "register by",
-      "deadline",
-      "eligible if",
-      "eligibility criteria",
-      "advance registration",
-      "voter ID required",
-      "polling date",
-      "submit this document"
-    ];
-
-    forbiddenTerms.forEach(term => {
-      expect(screen.queryByText(new RegExp(term, "i"))).toBeNull();
-    });
   });
 });

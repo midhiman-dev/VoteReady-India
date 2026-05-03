@@ -1,4 +1,4 @@
-import { SourceFragment } from "./sourceFragments";
+import { SourceFragment } from "./sourceFragments.js";
 
 export const SAFE_DEMO_SOURCE_FRAGMENTS: readonly SourceFragment[] = [
   {

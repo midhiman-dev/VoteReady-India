@@ -1,6 +1,6 @@
-import { LanguagePreference, ExplanationMode, IsoDateTimeString } from "./common";
-import { AssistantAnswerStatus, AssistantAnswerBlock, AssistantResponse } from "./assistant";
-import { SourceRecord } from "./source";
+import { LanguagePreference, ExplanationMode, IsoDateTimeString } from "./common.js";
+import { AssistantAnswerStatus, AssistantAnswerBlock, AssistantResponse } from "./assistant.js";
+import { SourceRecord } from "./source.js";
 
 /**
  * Represents an assistant response saved by the user.

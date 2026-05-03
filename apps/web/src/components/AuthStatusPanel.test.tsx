@@ -99,4 +99,19 @@ describe('AuthStatusPanel', () => {
     fireEvent.click(signOutBtn);
     expect(mockSignOut).toHaveBeenCalled();
   });
+
+  it('shows configuration pending message when not configured', () => {
+    vi.mocked(useAuth).mockReturnValue({
+      user: null,
+      loading: false,
+      signIn: mockSignIn,
+      signOut: mockSignOut,
+      isConfigured: false
+    });
+
+    render(<AuthStatusPanel />);
+    expect(screen.queryByRole('button', { name: /Sign in with Google/i })).not.toBeInTheDocument();
+    // The actual text in AuthStatusPanel.tsx for the inactive note:
+    expect(screen.getByText(/Sign in with Google to enable account-based features/i)).toBeInTheDocument();
+  });
 });

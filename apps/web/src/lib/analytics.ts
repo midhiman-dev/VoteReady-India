@@ -1,6 +1,5 @@
 import { AnalyticsEventName, AnalyticsEventPayload } from '@voteready/shared';
-import { logEvent } from 'firebase/analytics';
-import { getFirebaseClient } from './firebase';
+import { getAnalyticsInstance } from './firebase';
 
 /**
  * Analytics Configuration for the VoteReady India web app.
@@ -84,15 +83,22 @@ export const trackEvent = (name: AnalyticsEventName, payload?: AnalyticsEventPay
     console.log(`[Analytics] ${name}`, sanitizedPayload);
   }
 
-  try {
-    const { analytics } = getFirebaseClient();
+  // Handle Firebase Analytics lazily
+  getAnalyticsInstance().then(async (analytics) => {
     if (analytics) {
-      logEvent(analytics, name, sanitizedPayload);
+      try {
+        const { logEvent } = await import('firebase/analytics');
+        logEvent(analytics, name, sanitizedPayload);
+      } catch (error) {
+        if (config.debugMode) {
+          console.error('[Analytics logEvent Error]', error);
+        }
+      }
     }
-  } catch (error) {
+  }).catch(error => {
     // Fail silently to prevent app crashes due to analytics issues
     if (config.debugMode) {
-      console.error('[Analytics Error]', error);
+      console.error('[Analytics Instance Error]', error);
     }
-  }
+  });
 };

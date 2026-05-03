@@ -1,5 +1,5 @@
-import { IsoDateTimeString, LanguagePreference } from "./common";
-import { SourceFreshnessStatus } from "./source";
+import { IsoDateTimeString, LanguagePreference } from "./common.js";
+import { SourceFreshnessStatus } from "./source.js";
 
 export type SourceFragmentUseScope =
   | "demo_safe"

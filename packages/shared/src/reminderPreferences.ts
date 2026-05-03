@@ -1,4 +1,4 @@
-import { IsoDateTimeString } from "./common";
+import { IsoDateTimeString } from "./common.js";
 
 export const REMINDER_PREFERENCES_STORAGE_KEY = "voteready.reminderPreferences.v1";
 

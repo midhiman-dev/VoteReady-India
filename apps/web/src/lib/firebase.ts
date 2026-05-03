@@ -1,26 +1,24 @@
 import { initializeApp, getApps, FirebaseApp } from 'firebase/app';
-import { getAuth, Auth, GoogleAuthProvider } from 'firebase/auth';
-import { getFirestore, Firestore } from 'firebase/firestore';
-import { getAnalytics, Analytics, isSupported } from 'firebase/analytics';
+import type { Auth, GoogleAuthProvider as GoogleAuthProviderType } from 'firebase/auth';
+import type { Firestore } from 'firebase/firestore';
+import type { Analytics } from 'firebase/analytics';
 import { getFirebaseClientConfigStatus } from './firebaseConfig';
 
 let app: FirebaseApp | undefined;
 let auth: Auth | undefined;
 let db: Firestore | undefined;
 let analytics: Analytics | undefined;
-const googleProvider = new GoogleAuthProvider();
+let googleProvider: GoogleAuthProviderType | undefined;
 
 /**
- * Initializes the Firebase client if enabled and properly configured.
- * Returns the Auth, Firestore, and Analytics instances if successful, otherwise undefined.
+ * Initializes and returns the Firebase App instance if configured.
  */
-export function getFirebaseClient() {
-  if (auth && db) return { app, auth, db, analytics, googleProvider };
+function getApp(): FirebaseApp | undefined {
+  if (app) return app;
 
   const configStatus = getFirebaseClientConfigStatus();
-
   if (!configStatus.enabled || !configStatus.configured) {
-    return { app: undefined, auth: undefined, db: undefined, analytics: undefined, googleProvider: undefined };
+    return undefined;
   }
 
   const firebaseConfig = {
@@ -39,17 +37,95 @@ export function getFirebaseClient() {
     } else {
       app = getApps()[0];
     }
-    auth = getAuth(app);
-    db = getFirestore(app);
-    
-    // Analytics is not supported in all environments (e.g. SSR)
-    isSupported().then(yes => {
-      if (yes && app) analytics = getAnalytics(app);
-    });
-
-    return { app, auth, db, analytics, googleProvider };
+    return app;
   } catch (error) {
-    console.error('Failed to initialize Firebase:', error);
-    return { app: undefined, auth: undefined, db: undefined, analytics: undefined, googleProvider: undefined };
+    console.error('Failed to initialize Firebase App:', error);
+    return undefined;
   }
+}
+
+/**
+ * Lazily gets the Firebase Auth instance.
+ */
+export async function getAuthInstance(): Promise<Auth | undefined> {
+  if (auth) return auth;
+  const app = getApp();
+  if (!app) return undefined;
+
+  try {
+    const { getAuth } = await import('firebase/auth');
+    auth = getAuth(app);
+    return auth;
+  } catch (error) {
+    console.error('Failed to initialize Firebase Auth:', error);
+    return undefined;
+  }
+}
+
+/**
+ * Lazily gets the Firestore instance.
+ */
+export async function getFirestoreInstance(): Promise<Firestore | undefined> {
+  if (db) return db;
+  const app = getApp();
+  if (!app) return undefined;
+
+  try {
+    const { getFirestore } = await import('firebase/firestore');
+    db = getFirestore(app);
+    return db;
+  } catch (error) {
+    console.error('Failed to initialize Firestore:', error);
+    return undefined;
+  }
+}
+
+/**
+ * Lazily gets the Analytics instance.
+ */
+export async function getAnalyticsInstance(): Promise<Analytics | undefined> {
+  if (analytics) return analytics;
+  const app = getApp();
+  if (!app) return undefined;
+
+  try {
+    const { getAnalytics, isSupported } = await import('firebase/analytics');
+    if (await isSupported()) {
+      analytics = getAnalytics(app);
+    }
+    return analytics;
+  } catch (error) {
+    console.error('Failed to initialize Analytics:', error);
+    return undefined;
+  }
+}
+
+/**
+ * Lazily gets the Google Auth Provider.
+ */
+export async function getGoogleProviderInstance(): Promise<GoogleAuthProviderType | undefined> {
+  if (googleProvider) return googleProvider;
+  try {
+    const { GoogleAuthProvider } = await import('firebase/auth');
+    googleProvider = new GoogleAuthProvider();
+    return googleProvider;
+  } catch (error) {
+    console.error('Failed to initialize Google Auth Provider:', error);
+    return undefined;
+  }
+}
+
+/**
+ * Legacy wrapper for backward compatibility where sync access was expected.
+ * Note: Members will be undefined if not already initialized.
+ * Use specific async getters (getAuthInstance, etc.) for reliable lazy loading.
+ */
+export function getFirebaseClient() {
+  return { 
+    app: getApp(), 
+    auth, 
+    db, 
+    analytics, 
+    googleProvider 
+  };
 }

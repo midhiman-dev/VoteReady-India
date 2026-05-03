@@ -8,6 +8,7 @@ import {
 } from "../lib/savedGuidanceRepository";
 import { useAuth } from "../lib/AuthContext";
 import { trackEvent } from "../lib/analytics";
+import { formatSnakeCase, formatCapitalize, formatTimestamp } from "../lib/formatters";
 
 interface SavedGuidancePanelProps {
   refreshTrigger?: number;
@@ -158,13 +159,13 @@ export const SavedGuidancePanel: React.FC<SavedGuidancePanelProps> = ({
                     style={{ textTransform: 'uppercase', fontWeight: 'bold' }}
                     aria-label={`Status: ${item.responseStatus.replace(/_/g, " ")}`}
                   >
-                    {item.responseStatus.replace(/_/g, " ")}
+                    {formatSnakeCase(item.responseStatus)}
                   </span>
                   <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                     {item.localOnlyMarker && !user && <span title="Stored locally on this device">🏠</span>}
                     <span className="saved-item-date">
                       <time dateTime={item.savedTimestamp}>
-                        {new Date(item.savedTimestamp).toLocaleDateString()}
+                        {formatTimestamp(item.savedTimestamp)}
                       </time>
                     </span>
                   </div>
@@ -173,7 +174,7 @@ export const SavedGuidancePanel: React.FC<SavedGuidancePanelProps> = ({
                 <p className="saved-item-summary" style={{ margin: '0 0 1rem 0', fontSize: '0.9rem', color: '#555' }}>{item.shortSummary}</p>
                 <div className="saved-item-footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span className="saved-item-meta" style={{ fontSize: '0.8rem', color: '#777' }}>
-                    {item.language.replace(/_/g, " ")} • {item.explanationMode} • {item.sourceCount} sources
+                    {formatSnakeCase(item.language)} • {formatCapitalize(item.explanationMode)} • {item.sourceCount} sources
                   </span>
                   <button 
                     onClick={() => handleRemove(item.id)} 

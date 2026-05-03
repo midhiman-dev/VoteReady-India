@@ -4,8 +4,6 @@ import {
   AssistantResponse, 
   LanguagePreference, 
   ExplanationMode,
-  SUPPORTED_LANGUAGES,
-  SUPPORTED_EXPLANATION_MODES,
   SavedGuidanceItem,
 } from '@voteready/shared';
 import { postAssistantRequest } from '../lib/apiClient';
@@ -14,10 +12,9 @@ import { saveGuidance } from '../lib/savedGuidanceRepository';
 import { useAuth } from '../lib/AuthContext';
 import { trackEvent } from '../lib/analytics';
 import { detectIntent, IntentResult } from '../lib/intentDetector';
-
-function formatOptionLabel(val: string): string {
-  return val.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-}
+import AssistantQuestionForm from './AssistantQuestionForm';
+import SuggestionChips from './SuggestionChips';
+import SaveGuidanceAction from './SaveGuidanceAction';
 
 interface AssistantShellProps {
   onItemSaved?: () => void;
@@ -149,111 +146,28 @@ export default function AssistantShell({ onItemSaved }: AssistantShellProps) {
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="assistant-form">
-        <div className="form-group">
-          <label htmlFor="question" className="label">
-            Ask a question:
-          </label>
-          <textarea
-            id="question"
-            value={question}
-            onChange={e => setQuestion(e.target.value)}
-            rows={3}
-            placeholder="What would you like to know about voting in India?"
-            required
-            aria-required="true"
-          />
-          {/* Input awareness hint */}
-          {showInputHint && (
-            <p className="input-intent-hint" aria-live="polite" role="status">
-              <span className="hint-icon">💬</span> {liveIntent.hintLabel}
-            </p>
-          )}
-        </div>
-
-        <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="language" className="label">
-              Language:
-            </label>
-            <select
-              id="language"
-              value={language}
-              onChange={e => {
-                const newLang = e.target.value as LanguagePreference;
-                setLanguage(newLang);
-                trackEvent('mode_changed', { language: newLang, explanationMode });
-              }}
-            >
-              {SUPPORTED_LANGUAGES.map(lang => (
-                <option key={lang} value={lang}>
-                  {formatOptionLabel(lang)}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="mode" className="label">
-              Mode:
-            </label>
-            <select
-              id="mode"
-              value={explanationMode}
-              onChange={e => {
-                const newMode = e.target.value as ExplanationMode;
-                setExplanationMode(newMode);
-                trackEvent('mode_changed', { language, explanationMode: newMode });
-              }}
-            >
-              {SUPPORTED_EXPLANATION_MODES.map(mode => (
-                <option key={mode} value={mode}>
-                  {formatOptionLabel(mode)}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        <button
-          type="submit"
-          disabled={loading || !question.trim()}
-          className="submit-btn"
-          aria-busy={loading}
-        >
-          {loading ? (
-            <span className="btn-thinking">
-              <span className="thinking-dots">
-                <span>.</span>
-                <span>.</span>
-                <span>.</span>
-              </span>
-              Thinking
-            </span>
-          ) : (
-            'Ask Assistant'
-          )}
-        </button>
-      </form>
+      <AssistantQuestionForm
+        question={question}
+        setQuestion={setQuestion}
+        language={language}
+        setLanguage={setLanguage}
+        explanationMode={explanationMode}
+        setExplanationMode={setExplanationMode}
+        onSubmit={handleSubmit}
+        loading={loading}
+        showInputHint={showInputHint}
+        hintLabel={liveIntent.hintLabel}
+        onModeChange={(lang, mode) => trackEvent('mode_changed', { language: lang, explanationMode: mode })}
+      />
 
       {/* Empty / first-time state with intent-aware chips */}
       {showEmptyState && (
-        <div className="assistant-empty-state">
-          <p className="suggested-label">Try asking:</p>
-          <div className="suggestion-chips" role="group" aria-label="Suggested questions">
-            {emptyStateChips.map(chip => (
-              <button
-                key={chip}
-                type="button"
-                className="suggestion-chip"
-                onClick={() => handleChipClick(chip)}
-                aria-label={`Ask: ${chip}`}
-              >
-                {chip}
-              </button>
-            ))}
-          </div>
-        </div>
+        <SuggestionChips
+          chips={emptyStateChips}
+          onChipClick={handleChipClick}
+          label="Try asking:"
+          className="assistant-empty-state"
+        />
       )}
 
       {/* Thinking state */}
@@ -282,29 +196,13 @@ export default function AssistantShell({ onItemSaved }: AssistantShellProps) {
           <div className="response-section response-fade-in">
             <div className="response-section-header">
               <h3>Response</h3>
-              <div className="response-actions">
-                {!isSaved ? (
-                  <button
-                    onClick={handleSave}
-                    className="save-response-btn"
-                    aria-label={user ? "Save response to your account" : "Save response locally"}
-                  >
-                    🔖 {user ? 'Save to Cloud' : 'Save'}
-                  </button>
-                ) : (
-                  <span role="status" className="saved-confirmation">
-                    ✓ Saved locally
-                  </span>
-                )}
-              </div>
+              <SaveGuidanceAction
+                isSaved={isSaved}
+                onSave={handleSave}
+                saveConfirmed={saveConfirmed}
+                isUserSignedIn={!!user}
+              />
             </div>
-
-            {/* Save confirmation toast */}
-            {saveConfirmed && (
-              <div className="save-toast" role="status" aria-live="polite">
-                <span>✓</span> Response saved to your device. View it in the Saved tab.
-              </div>
-            )}
 
             <AssistantResponsePreview
               response={response}
@@ -315,20 +213,13 @@ export default function AssistantShell({ onItemSaved }: AssistantShellProps) {
             {/* Follow-up suggestions */}
             {lastIntent.followUpChips.length > 0 && (
               <div className="followup-section" aria-label="Follow-up suggestions">
-                <p className="followup-label">You might also want to ask:</p>
-                <div className="suggestion-chips followup-chips" role="group" aria-label="Follow-up questions">
-                  {lastIntent.followUpChips.map(chip => (
-                    <button
-                      key={chip}
-                      type="button"
-                      className="suggestion-chip followup-chip"
-                      onClick={() => handleChipClick(chip)}
-                      aria-label={`Ask: ${chip}`}
-                    >
-                      {chip}
-                    </button>
-                  ))}
-                </div>
+                <SuggestionChips
+                  chips={lastIntent.followUpChips}
+                  onChipClick={handleChipClick}
+                  label="You might also want to ask:"
+                  className="followup-chips-container"
+                  groupLabel="Follow-up questions"
+                />
                 <p className="continuity-hint">
                   You can ask a follow-up or explore another topic.
                 </p>

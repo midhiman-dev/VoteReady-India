@@ -44,6 +44,9 @@ The application leverages the full Google Cloud ecosystem for a premium, scalabl
 - **Firebase Authentication**: Provides secure Google Sign-In for account-based features.
 - **Firebase Analytics**: Tracks product interactions securely without PII.
 
+### Production Runtime
+The API service uses a multi-stage Docker build that produces a lean runtime image. It runs compiled JavaScript (`dist/`) using native Node.js ESM, ensuring high efficiency and security by excluding TypeScript source and development tooling (like `tsx`) from the production environment.
+
 ## Evidence of Integration
 - **Grounded Assistant**: Responses include source metadata and freshness indicators fetched from Firestore.
 - **Live Auth**: Sign-in with Google is active in the "Account & Sync" panel.
@@ -96,3 +99,15 @@ npm test
 - `docs/` — Architecture, source registry, and testing notes
 - `skills.md` — Repo-level build rules
 - `agents.md` — Role-based agent collaboration model
+
+## Final Optimization Pass
+
+The final pass focused on performance, maintainability, and regression safety.
+
+- **Frontend Efficiency**: App shell renders immediately without blocking on metadata/source-registry requests.
+- **Lazy Loading**: Firebase Auth, Firestore, and Analytics are lazy-loaded only when required, reducing initial bundle weight.
+- **API Performance**: Cloud Run API caches source registry/fragments with a short TTL (configurable).
+- **Gemini Optimization**: Model client uses singleton reuse to avoid repeated initialization costs.
+- **Runtime Hardening**: API Docker runtime runs compiled JavaScript using production-only dependencies.
+- **Modular UI**: Assistant UI was decomposed into smaller, focused components for better maintainability.
+- **Robust Testing**: Regression suite now covers 164 tests across API, web, and shared packages, ensuring stability of Google-backed flows and safety fallbacks.

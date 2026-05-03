@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI, GenerativeModel } from "@google/generative-ai";
 import { GeminiConfig } from "../config/gemini.js";
 import { SourceRecord, SourceFragment, LanguagePreference, ExplanationMode } from "@voteready/shared";
 
@@ -10,8 +10,44 @@ export interface GeminiRequest {
   explanationMode: ExplanationMode;
 }
 
+/** Cache key for a model instance. */
+function modelCacheKey(apiKey: string, modelName: string): string {
+  return `${modelName}::${apiKey}`;
+}
+
+/** In-process singleton cache for Gemini model instances, keyed by apiKey+model. */
+const modelCache = new Map<string, GenerativeModel>();
+
+/**
+ * Returns (or creates) a cached GenerativeModel for the given config.
+ * Avoids re-instantiating GoogleGenerativeAI and getGenerativeModel on every request.
+ */
+function getOrCreateModel(config: GeminiConfig): GenerativeModel {
+  const apiKey = process.env.GEMINI_API_KEY || "";
+  const key = modelCacheKey(apiKey, config.model);
+
+  if (modelCache.has(key)) {
+    return modelCache.get(key)!;
+  }
+
+  const genAI = new GoogleGenerativeAI(apiKey);
+  const model = genAI.getGenerativeModel({ model: config.model });
+  modelCache.set(key, model);
+  return model;
+}
+
+/**
+ * Clears the model instance cache.
+ * Useful in tests and when API key or model config changes at runtime.
+ */
+export function clearModelCache(): void {
+  modelCache.clear();
+}
+
 /**
  * Server-side Gemini client wrapper with timeout and safe error fallback.
+ * Uses a singleton model instance per (apiKey, model) pair to avoid repeated
+ * GoogleGenerativeAI initialization on every request.
  */
 export async function callGemini(
   params: GeminiRequest,
@@ -21,9 +57,7 @@ export async function callGemini(
     throw new Error("Gemini is not configured or disabled.");
   }
 
-  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
-  const model = genAI.getGenerativeModel({ model: config.model });
-
+  const model = getOrCreateModel(config);
   const prompt = buildGroundedPrompt(params);
 
   // Implement timeout using AbortController

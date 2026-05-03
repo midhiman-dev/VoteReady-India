@@ -1,4 +1,4 @@
-import { LanguagePreference, ExplanationMode } from "./common";
+import { LanguagePreference, ExplanationMode } from "./common.js";
 
 /**
  * Canonical list of supported languages for the VoteReady assistant.
