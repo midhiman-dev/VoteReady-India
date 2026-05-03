@@ -11,12 +11,15 @@ import { ReminderPreferencesPanel } from './components/ReminderPreferencesPanel'
 import { AuthStatusPanel } from './components/AuthStatusPanel'
 import './App.css'
 
+type TabId = 'ask' | 'journeys' | 'basics' | 'saved' | 'settings'
+
 function App() {
   const [metadata, setMetadata] = useState<AppMetadataResponse | null>(null)
   const [registry, setRegistry] = useState<SourceRegistryResponse | null>(null)
   const [refreshTrigger, setRefreshTrigger] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [activeTab, setActiveTab] = useState<TabId>('ask')
 
   const handleRefresh = () => {
     setRefreshTrigger(prev => prev + 1)
@@ -48,12 +51,12 @@ function App() {
 
   return (
     <div className="app-shell">
-      <header>
+      <header className="app-header">
         <h1>{APP_NAME}</h1>
         <p className="tagline">{TAGLINE}</p>
       </header>
 
-      <main>
+      <main className="app-main">
         {loading && (
           <div className="loading">
             <p>Fetching latest API metadata...</p>
@@ -67,23 +70,26 @@ function App() {
         )}
 
         {!loading && !error && metadata && registry && (
-          <div className="content-container">
-            <AssistantShell onItemSaved={handleRefresh} />
-
-            <SavedGuidancePanel refreshTrigger={refreshTrigger} onItemRemoved={handleRefresh} />
-            <AuthStatusPanel />
-            <ReminderPreferencesPanel />
-            <GuidedJourneyChooser />
-
-            <ElectionBasicsExplainer />
-
-            <div className="metadata-grid">
-              <ApiStatusCard metadata={metadata} />
-              <SourceRegistryPreview registry={registry} />
-            </div>
+          <div className="tab-content">
+            {activeTab === 'ask' && <AssistantShell onItemSaved={handleRefresh} />}
+            {activeTab === 'journeys' && <GuidedJourneyChooser />}
+            {activeTab === 'basics' && <ElectionBasicsExplainer />}
+            {activeTab === 'saved' && <SavedGuidancePanel refreshTrigger={refreshTrigger} onItemRemoved={handleRefresh} />}
+            {activeTab === 'settings' && (
+              <div className="settings-container">
+                <h2 className="settings-title">Settings</h2>
+                <div className="settings-grid">
+                  <ReminderPreferencesPanel />
+                  <AuthStatusPanel />
+                </div>
+                <div className="metadata-grid">
+                  <ApiStatusCard metadata={metadata} />
+                  <SourceRegistryPreview registry={registry} />
+                </div>
+              </div>
+            )}
           </div>
         )}
-
 
         {!loading && !error && (!metadata || !registry) && (
           <div className="status-card">
@@ -93,9 +99,28 @@ function App() {
         )}
       </main>
 
-      <footer>
-        <p>© 2026 {APP_NAME} • Built for the Indian Voter</p>
-      </footer>
+      <nav className="bottom-nav">
+        <button className={`nav-btn ${activeTab === 'ask' ? 'active' : ''}`} onClick={() => setActiveTab('ask')}>
+          <span className="nav-icon">💬</span>
+          <span className="nav-label">Ask</span>
+        </button>
+        <button className={`nav-btn ${activeTab === 'journeys' ? 'active' : ''}`} onClick={() => setActiveTab('journeys')}>
+          <span className="nav-icon">🗺️</span>
+          <span className="nav-label">Journeys</span>
+        </button>
+        <button className={`nav-btn ${activeTab === 'basics' ? 'active' : ''}`} onClick={() => setActiveTab('basics')}>
+          <span className="nav-icon">📚</span>
+          <span className="nav-label">Basics</span>
+        </button>
+        <button className={`nav-btn ${activeTab === 'saved' ? 'active' : ''}`} onClick={() => setActiveTab('saved')}>
+          <span className="nav-icon">🔖</span>
+          <span className="nav-label">Saved</span>
+        </button>
+        <button className={`nav-btn ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => setActiveTab('settings')}>
+          <span className="nav-icon">⚙️</span>
+          <span className="nav-label">Settings</span>
+        </button>
+      </nav>
     </div>
   )
 }

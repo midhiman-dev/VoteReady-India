@@ -2,6 +2,13 @@ import React, { useState } from "react";
 import { ELECTION_BASICS_TOPICS, ElectionBasicsTopicSummary } from "@voteready/shared";
 import { trackEvent } from "../lib/analytics";
 
+const formatStatus = (status: string) => {
+  const normalized = status.replace(/_/g, ' ');
+  if (status === 'coming_soon' || status === 'pending') return `⏳ ${normalized}`;
+  if (status === 'active') return `✓ ${normalized}`;
+  return `⏳ ${normalized}`;
+};
+
 /**
  * Election Basics Explainer Shell Component
  * Provides a safe placeholder for civic education topics.
@@ -79,7 +86,7 @@ export const ElectionBasicsExplainer: React.FC = () => {
                 className="status-label"
                 aria-label={`Topic status: ${topic.status.replace(/_/g, " ")}`}
               >
-                {topic.status.replace(/_/g, " ")}
+                {formatStatus(topic.status)}
               </span>
             </button>
           </div>

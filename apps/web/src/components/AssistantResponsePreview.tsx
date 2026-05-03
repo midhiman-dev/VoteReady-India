@@ -6,11 +6,11 @@ interface Props {
 
 const formatFreshness = (status: string) => {
   const labels: Record<string, string> = {
-    verified: 'Verified',
-    review_due: 'Review due',
-    stale: 'Stale',
-    archived: 'Archived',
-    unverified: 'Unverified'
+    verified: '✓ Verified',
+    review_due: '⚠️ Review due',
+    stale: '❌ Stale',
+    archived: '📦 Archived',
+    unverified: '❓ Unverified'
   };
   return labels[status] || status;
 };
@@ -58,7 +58,7 @@ export default function AssistantResponsePreview({ response }: Props) {
           className={`freshness-summary freshness-${response.freshnessSummary.status}`}
           role="status"
         >
-          <span className="label">Freshness:</span> {response.freshnessSummary.message}
+          <span className="label">Freshness:</span> {formatFreshness(response.freshnessSummary.status)} - {response.freshnessSummary.message}
         </div>
       )}
 
