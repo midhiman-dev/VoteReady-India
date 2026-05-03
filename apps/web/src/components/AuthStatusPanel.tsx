@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { getFirebaseAuthStatus } from '../lib/firebaseAuthStatus';
+import { trackEvent } from '../lib/analytics';
 
 /**
  * A safe, non-functional Account & Sync shell panel.
@@ -8,6 +9,13 @@ import { getFirebaseAuthStatus } from '../lib/firebaseAuthStatus';
  */
 export const AuthStatusPanel: React.FC = () => {
   const authStatus = getFirebaseAuthStatus();
+  
+  useEffect(() => {
+    trackEvent('auth_shell_viewed', { 
+      authMode: authStatus.providerMode,
+      cloudSyncActive: authStatus.cloudSyncActive
+    });
+  }, [authStatus.providerMode, authStatus.cloudSyncActive]);
 
   return (
     <div className="card auth-status-panel" id="auth-status-panel">

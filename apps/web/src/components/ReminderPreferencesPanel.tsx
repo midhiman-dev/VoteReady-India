@@ -9,6 +9,7 @@ import {
   saveReminderPreferences, 
   resetReminderPreferences 
 } from "../lib/reminderPreferencesStorage";
+import { trackEvent } from "../lib/analytics";
 
 /**
  * ReminderPreferencesPanel Component
@@ -26,6 +27,13 @@ export const ReminderPreferencesPanel: React.FC = () => {
     e.preventDefault();
     saveReminderPreferences(prefs);
     setIsSaved(true);
+    
+    trackEvent('reminder_preferences_saved', {
+      remindersEnabled: prefs.remindersEnabled,
+      preferredChannelPlaceholder: prefs.preferredChannel,
+      timingPreferencePlaceholder: prefs.timingPreference
+    });
+
     setTimeout(() => setIsSaved(false), 3000);
   };
 
@@ -34,6 +42,7 @@ export const ReminderPreferencesPanel: React.FC = () => {
       resetReminderPreferences();
       setPrefs(getReminderPreferences());
       setIsSaved(false);
+      trackEvent('reminder_preferences_reset');
     }
   };
 

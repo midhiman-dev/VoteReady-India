@@ -1,16 +1,19 @@
 import React, { useState } from "react";
 import { GUIDED_JOURNEY_SUMMARIES, GuidedJourneySummary } from "@voteready/shared";
 import { GuidedJourneyDetail } from "./GuidedJourneyDetail";
+import { trackEvent } from "../lib/analytics";
 
 export const GuidedJourneyChooser: React.FC = () => {
   const [selectedJourney, setSelectedJourney] = useState<GuidedJourneySummary | null>(null);
 
   const handleSelect = (journey: GuidedJourneySummary) => {
     setSelectedJourney(journey);
+    trackEvent('guided_journey_selected', { journeyId: journey.id });
   };
 
   const handleBack = () => {
     setSelectedJourney(null);
+    trackEvent('guided_journey_back_clicked');
   };
 
   if (selectedJourney) {

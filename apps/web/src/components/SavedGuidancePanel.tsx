@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { SavedGuidanceItem } from "@voteready/shared";
 import { getSavedGuidance, removeSavedGuidanceItem, clearAllSavedGuidance } from "../lib/savedGuidanceStorage";
 import { getSavedGuidanceRepositoryStatus } from "../lib/savedGuidanceRepository";
+import { trackEvent } from "../lib/analytics";
 
 interface SavedGuidancePanelProps {
   refreshTrigger?: number;
@@ -35,8 +36,20 @@ export const SavedGuidancePanel: React.FC<SavedGuidancePanelProps> = ({
   }, []);
 
   const handleRemove = (id: string) => {
+    const item = items.find(i => i.id === id);
     removeSavedGuidanceItem(id);
     loadItems();
+
+    if (item) {
+      trackEvent('saved_guidance_removed', {
+        language: item.language,
+        explanationMode: item.explanationMode,
+        responseStatus: item.responseStatus,
+        sourceCount: item.sourceCount,
+        storageMode: 'local'
+      });
+    }
+
     if (onItemRemoved) onItemRemoved();
   };
 
@@ -44,6 +57,7 @@ export const SavedGuidancePanel: React.FC<SavedGuidancePanelProps> = ({
     if (window.confirm("Are you sure you want to clear all saved guidance? This action cannot be undone.")) {
       clearAllSavedGuidance();
       loadItems();
+      trackEvent('saved_guidance_cleared', { storageMode: 'local' });
       if (onItemRemoved) onItemRemoved();
     }
   };
