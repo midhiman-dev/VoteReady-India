@@ -99,3 +99,15 @@ npm test
 - `docs/` — Architecture, source registry, and testing notes
 - `skills.md` — Repo-level build rules
 - `agents.md` — Role-based agent collaboration model
+
+## Final Optimization Pass
+
+The final pass focused on performance, maintainability, and regression safety.
+
+- **Frontend Efficiency**: App shell renders immediately without blocking on metadata/source-registry requests.
+- **Lazy Loading**: Firebase Auth, Firestore, and Analytics are lazy-loaded only when required, reducing initial bundle weight.
+- **API Performance**: Cloud Run API caches source registry/fragments with a short TTL (configurable).
+- **Gemini Optimization**: Model client uses singleton reuse to avoid repeated initialization costs.
+- **Runtime Hardening**: API Docker runtime runs compiled JavaScript using production-only dependencies.
+- **Modular UI**: Assistant UI was decomposed into smaller, focused components for better maintainability.
+- **Robust Testing**: Regression suite now covers 164 tests across API, web, and shared packages, ensuring stability of Google-backed flows and safety fallbacks.

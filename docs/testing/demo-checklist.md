@@ -1,120 +1,72 @@
-# VoteReady India — Demo Checklist
+# VoteReady India — Production Demo Checklist
 
-This document provides a comprehensive checklist for validating the current build of the VoteReady India application.
+This document provides a comprehensive checklist for validating the production build of the VoteReady India application, with all Google Cloud integrations active.
 
-## 1. Web App Shell
-- [ ] Application loads at `http://localhost:3000` (or alternate Vite port).
-- [ ] Navbar and Footer are visible.
-- [ ] Sidebar/Main content area layout is correct.
+## 1. Web App Shell & Efficiency
+- [ ] Application loads at `http://localhost:3000` (or production URL).
+- [ ] **Instant Render**: App shell (Ask tab) renders immediately without waiting for API metadata.
+- [ ] **Lazy Loading**: Verified that Firebase/Analytics modules are not in the main entry bundle (loaded on demand).
 - [ ] Responsive design works for mobile/desktop.
 
 ## 2. API Health & Metadata
-- [ ] API is running at `http://localhost:8080`.
+- [ ] API is running at `http://localhost:8080` (or production URL).
 - [ ] `GET /` returns health and version info.
-- [ ] `GET /metadata/source-registry` returns the source registry list.
-- [ ] Source records show `review-due` status.
+- [ ] `GET /metadata/source-registry` returns the source registry list from Firestore (or cache).
+- [ ] **Caching**: Sequential requests to `/metadata/source-registry` show reduced latency after the first call.
 
-## 3. Assistant Shell
+## 3. Grounded Assistant
 - [ ] Assistant input is interactive.
-- [ ] Submitting a question shows a loading state.
-- [ ] Response is displayed correctly in the chat UI.
+- [ ] **Gemini Integration**: Responses are generated using Gemini 2.5 Flash.
+- [ ] **Source Grounding**: Responses are grounded in official fragments from Firestore.
 - [ ] Language selection (English, Hindi, Hinglish) works.
-- [ ] Explanation mode (Standard, Simple) works.
+- [ ] Explanation mode (Standard, Simple, Quick, Detailed) works.
 
-## 4. Safe Source Metadata Cards
-- [ ] Responses include source metadata cards where applicable.
-- [ ] Cards display title, URL (placeholder), and freshness.
-- [ ] Cards include "Official Source" labeling.
+## 4. Source Cards & Provenance
+- [ ] Responses include interactive source cards.
+- [ ] Cards display title, official URL, and freshness metadata.
+- [ ] "Freshness Badge" accurately reflects the review status of the grounding data.
 
-## 5. Safety States
-- [ ] **Cannot-Verify**: Submit "How do I register to vote?" -> Confirm response states that guidance cannot be verified yet.
-- [ ] **Out-of-Scope/Neutral**: Submit "Which party should I vote for?" -> Confirm neutral refusal for political recommendations.
+## 5. Active Safety States
+- [ ] **Cannot-Verify**: Submit a question with no matching sources -> Confirm shell refusal.
+- [ ] **Out-of-Scope**: Submit "Which party should I vote for?" -> Confirm Gemini-level or shell-level neutral refusal.
+- [ ] **Timeout Fallback**: Simulated API delay results in a safe "cannot verify" response rather than a crash.
 
-## 6. Saved Guidance (Local-Only)
-- [ ] "Save" button on assistant response works.
-- [ ] Saved items appear in the "Saved Guidance" panel.
-- [ ] Items persist after page reload (`localStorage`).
-- [ ] "Remove" individual item works.
-- [ ] "Clear All" works.
+## 6. Account & Sync (Live)
+- [ ] "Account & Sync" panel displays "Auth Active" badge.
+- [ ] **Google Sign-In**: "Sign in with Google" button triggers the popup.
+- [ ] **Cloud Sync**: After sign-in, saved items are stored in Firestore.
+- [ ] **Sign-Out**: "Sign Out" button works and returns the app to local-only mode.
 
-## 7. Account & Sync (Inactive Shell)
-- [ ] "Account & Sync" panel is visible.
-- [ ] Status is clearly labeled as "Not Signed In" or "Inactive".
-- [ ] Buttons are present but display "Coming soon" or "Inactive" messaging.
+## 7. Saved Guidance
+- [ ] "Save" button on assistant response works (Local/Cloud).
+- [ ] Saved items appear in the "Saved Guidance" panel with correct source attribution.
+- [ ] Items persist after page reload.
 
-## 8. Reminder Preferences (Inactive Shell)
-- [ ] "Reminder Preferences" panel is visible.
-- [ ] Can toggle placeholder settings (Notification channel, timing).
-- [ ] Settings persist locally but have no backend effect.
+## 8. Reminder Preferences
+- [ ] "Reminder Preferences" panel is functional.
+- [ ] Settings (Channel, Timing) persist in Firestore for signed-in users.
 - [ ] "Reset to Defaults" works.
 
-## 9. Guided Journeys (Shell)
-- [ ] "Guided Journeys" section lists all 6 journey cards.
-- [ ] Cards show "Coming soon" or "Source-backed flow pending".
-- [ ] Safety notice is prominent.
-- [ ] Selecting "Turning 18 soon" opens the detail shell.
-
-## 10. Turning 18 Soon Detail Shell
-- [ ] Displays journey-specific placeholder status.
-- [ ] Shows safety notice (Not verified guidance).
-- [ ] "Return to journeys" works.
-
-## 11. Election Basics (Shell)
-- [ ] "Election Basics" section lists topic cards.
-- [ ] Opening a topic shows a placeholder detail view.
-- [ ] Safety note is present.
-
-## 12. Accessibility Pass
-- [ ] Keyboard navigation (Tab, Enter) works for core controls.
-- [ ] Screen reader labels (aria-labels) are present on interactive elements.
-- [ ] High contrast support (via semantic CSS).
-
-## 13. App Check & Analytics (Shell)
-- [ ] App Check configuration is present but disabled.
-- [ ] Analytics tracking functions exist but are no-ops.
-
-## 14. Firebase/Firestore (Shell)
-- [ ] Configuration is present but `active: false`.
-- [ ] Data layer uses `localStorage` by default.
+## 9. Analytics & Privacy (Active)
+- [ ] **Event Tracking**: Interaction events (tab switch, question submitted) are logged to Firebase.
+- [ ] **PII Scrubbing**: Verified that no raw question text or user names are sent in analytics payloads.
+- [ ] **Debug Mode**: Events are visible in the browser console when `VITE_ANALYTICS_DEBUG_MODE=true`.
 
 ---
 
-## Evidence Table
+## Verification Evidence Table
 
 | Area | Verification Method | Expected Result | Evidence Status |
 | :--- | :--- | :--- | :--- |
-| **API** | `npm test --workspace=@voteready/api` | All tests pass | [Passed] |
-| **Web** | `npm test --workspace=@voteready/web` | All tests pass | [Passed] |
-| **Shared** | `npm test --workspace=@voteready/shared` | All tests pass | [Passed] |
-| **Build** | `npm run build` | Success (all workspaces) | [Passed] |
-| **Lint** | `npm run typecheck` | No type errors | [Passed] |
+| **API** | `npm test -w services/api` | 78 tests pass | ✅ Passed |
+| **Web** | `npm test -w apps/web` | 77 tests pass | ✅ Passed |
+| **Shared** | `npm test -w packages/shared` | 9 tests pass | ✅ Passed |
+| **Build** | `npm run build` | Multi-stage success | ✅ Passed |
+| **Lint** | `npm run typecheck` | 0 errors | ✅ Passed |
 
 ---
 
-## Local Run Instructions
-
-### Prerequisites
-- Node.js (Latest LTS recommended)
-- `npm`
-
-### Setup
-```powershell
-npm install
-```
-
-### Development
-Start API:
-```powershell
-npm run dev:api
-```
-Start Web:
-```powershell
-npm run dev:web
-```
-
-### Verification
-```powershell
-npm run build
-npm run typecheck
-npm test
-```
+## Deployment Verification (Cloud Run)
+- [ ] **Multi-Stage Build**: API Dockerfile uses `node dist/server.js`.
+- [ ] **Lean Runtime**: Development tools (`tsx`, `typescript`) are excluded from the runtime image.
+- [ ] **Environment**: All production `VITE_` and `API_` environment variables are correctly mapped.
