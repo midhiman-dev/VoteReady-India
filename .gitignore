@@ -154,3 +154,4 @@ service-account*.json
 # Local env variants
 .env.local
 .env.*.local
+cloudbuild_log.txt
