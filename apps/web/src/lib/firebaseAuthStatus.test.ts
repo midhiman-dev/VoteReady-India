@@ -19,10 +19,11 @@ describe('getFirebaseAuthStatus', () => {
     const status = getFirebaseAuthStatus(env);
     expect(status.enabled).toBe(true);
     expect(status.configured).toBe(false);
-    expect(status.statusLabel).toBe('Auth enabled but Firebase incomplete remains inactive');
+    expect(status.statusLabel).toBe('Auth enabled but Firebase incomplete');
+    expect(status.signInActive).toBe(false);
   });
 
-  it('should return ready-shell status when enabled and Firebase is configured', () => {
+  it('should return Active status when enabled and Firebase is configured', () => {
     const env = {
       VITE_FIREBASE_AUTH_ENABLED: 'true',
       VITE_FIREBASE_ENABLED: 'true',
@@ -33,9 +34,9 @@ describe('getFirebaseAuthStatus', () => {
     const status = getFirebaseAuthStatus(env);
     expect(status.enabled).toBe(true);
     expect(status.configured).toBe(true);
-    expect(status.statusLabel).toBe('Auth enabled and Firebase configured returns ready-shell status');
-    expect(status.signInActive).toBe(false); // Must remain false in Task 030
-    expect(status.cloudSyncActive).toBe(false); // Must remain false in Task 030
+    expect(status.statusLabel).toBe('Auth Active');
+    expect(status.signInActive).toBe(true);
+    expect(status.cloudSyncActive).toBe(true);
   });
 
   it('should preserve provider mode and google enabled settings', () => {

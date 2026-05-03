@@ -4,6 +4,7 @@ export interface FirebaseClientConfigStatus {
   projectIdPresent: boolean;
   appIdPresent: boolean;
   apiKeyPresent: boolean;
+  authDomainPresent: boolean;
 }
 
 export interface ImportMetaEnvLike {
@@ -11,6 +12,9 @@ export interface ImportMetaEnvLike {
   VITE_FIREBASE_API_KEY?: string;
   VITE_FIREBASE_PROJECT_ID?: string;
   VITE_FIREBASE_APP_ID?: string;
+  VITE_FIREBASE_AUTH_DOMAIN?: string;
+  VITE_FIREBASE_STORAGE_BUCKET?: string;
+  VITE_FIREBASE_MESSAGING_SENDER_ID?: string;
   [key: string]: string | undefined;
 }
 
@@ -25,8 +29,9 @@ export function getFirebaseClientConfigStatus(
   const apiKeyPresent = !!env.VITE_FIREBASE_API_KEY;
   const projectIdPresent = !!env.VITE_FIREBASE_PROJECT_ID;
   const appIdPresent = !!env.VITE_FIREBASE_APP_ID;
+  const authDomainPresent = !!env.VITE_FIREBASE_AUTH_DOMAIN;
 
-  // Configuration is considered complete if enabled and all required fields are present
+  // Configuration is considered complete if enabled and core fields are present
   const configured = enabled && apiKeyPresent && projectIdPresent && appIdPresent;
 
   return {
@@ -35,5 +40,6 @@ export function getFirebaseClientConfigStatus(
     projectIdPresent,
     appIdPresent,
     apiKeyPresent,
+    authDomainPresent,
   };
 }

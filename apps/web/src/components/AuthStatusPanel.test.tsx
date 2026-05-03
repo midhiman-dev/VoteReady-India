@@ -1,15 +1,16 @@
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { AuthStatusPanel } from './AuthStatusPanel';
+import { useAuth } from '../lib/AuthContext';
 
 // Mock the status helpers
 vi.mock('../lib/firebaseAuthStatus', () => ({
   getFirebaseAuthStatus: vi.fn(() => ({
-    enabled: false,
-    configured: false,
-    statusLabel: 'Auth disabled by default',
-    signInActive: false,
-    cloudSyncActive: false
+    enabled: true,
+    configured: true,
+    statusLabel: 'Auth Active',
+    signInActive: true,
+    cloudSyncActive: true
   }))
 }));
 
@@ -23,42 +24,79 @@ vi.mock('../lib/appCheckStatus', () => ({
   }))
 }));
 
+const mockSignIn = vi.fn();
+const mockSignOut = vi.fn();
+
+vi.mock('../lib/AuthContext', () => ({
+  useAuth: vi.fn(() => ({
+    user: null,
+    loading: false,
+    signIn: mockSignIn,
+    signOut: mockSignOut,
+    isConfigured: true
+  }))
+}));
+
 describe('AuthStatusPanel', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.mocked(useAuth).mockReturnValue({
+      user: null,
+      loading: false,
+      signIn: mockSignIn,
+      signOut: mockSignOut,
+      isConfigured: true
+    });
+  });
+
   it('renders the account & sync header', () => {
     render(<AuthStatusPanel />);
     expect(screen.getByText('Account & Sync')).toBeInTheDocument();
   });
 
-  it('shows sign-in inactive messaging', () => {
+  it('shows sign-in button when configured but not signed in', () => {
     render(<AuthStatusPanel />);
-    expect(screen.getByText(/Sign-in Inactive/i)).toBeInTheDocument();
-    expect(screen.getByText(/Account-based features are not yet active/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Sign in with Google/i })).toBeInTheDocument();
   });
 
-  it('shows cloud sync inactive messaging', () => {
+  it('calls signIn when sign-in button is clicked', () => {
     render(<AuthStatusPanel />);
-    expect(screen.getByText(/Cloud Sync Inactive/i)).toBeInTheDocument();
-    expect(screen.getByText(/Cloud synchronization is currently disabled/i)).toBeInTheDocument();
+    const signInBtn = screen.getByRole('button', { name: /Sign in with Google/i });
+    fireEvent.click(signInBtn);
+    expect(mockSignIn).toHaveBeenCalled();
   });
 
-  it('shows App Check inactive messaging', () => {
+  it('shows user info and sign-out button when signed in', () => {
+    vi.mocked(useAuth).mockReturnValue({
+      user: {
+        displayName: 'Test User',
+        email: 'test@example.com',
+        photoURL: 'https://example.com/photo.jpg'
+      } as any,
+      loading: false,
+      signIn: mockSignIn,
+      signOut: mockSignOut,
+      isConfigured: true
+    });
+
     render(<AuthStatusPanel />);
-    expect(screen.getByText(/Security Readiness/i)).toBeInTheDocument();
-    expect(screen.getByText(/App Check: Not active yet/i)).toBeInTheDocument();
+    expect(screen.getByText('Test User')).toBeInTheDocument();
+    expect(screen.getByText('test@example.com')).toBeInTheDocument();
+    expect(screen.getByText(/Sign Out/i)).toBeInTheDocument();
   });
 
-  it('displays the status label from the helper', () => {
-    render(<AuthStatusPanel />);
-    expect(screen.getByText('Auth disabled by default')).toBeInTheDocument();
-  });
+  it('calls signOut when sign-out button is clicked', () => {
+    vi.mocked(useAuth).mockReturnValue({
+      user: { displayName: 'Test User' } as any,
+      loading: false,
+      signIn: mockSignIn,
+      signOut: mockSignOut,
+      isConfigured: true
+    });
 
-  it('does not render any sign-in forms or identity input fields', () => {
-    const { container } = render(<AuthStatusPanel />);
-    const inputs = container.querySelectorAll('input');
-    const buttons = container.querySelectorAll('button');
-    
-    expect(inputs.length).toBe(0);
-    // There might be buttons in other components but not in this specific panel shell for Task 030
-    expect(buttons.length).toBe(0);
+    render(<AuthStatusPanel />);
+    const signOutBtn = screen.getByText(/Sign Out/i);
+    fireEvent.click(signOutBtn);
+    expect(mockSignOut).toHaveBeenCalled();
   });
 });

@@ -23,17 +23,17 @@ export function getFirebaseAuthStatus(
   const providerMode = env.VITE_FIREBASE_AUTH_PROVIDER_MODE || 'disabled';
   const googleEnabled = env.VITE_FIREBASE_AUTH_GOOGLE_ENABLED === 'true';
 
-  // Strict boundaries for Task 030: sign-in and cloud sync remain inactive
-  const signInActive = false;
-  const cloudSyncActive = false;
+  // Task 003: sign-in and cloud sync are now active if configured
+  const signInActive = authEnabled && firebaseStatus.configured;
+  const cloudSyncActive = authEnabled && firebaseStatus.configured;
 
   let statusLabel = 'Auth disabled by default';
   
   if (authEnabled) {
     if (!firebaseStatus.configured) {
-      statusLabel = 'Auth enabled but Firebase incomplete remains inactive';
+      statusLabel = 'Auth enabled but Firebase incomplete';
     } else {
-      statusLabel = 'Auth enabled and Firebase configured returns ready-shell status';
+      statusLabel = 'Auth Active';
     }
   }
 

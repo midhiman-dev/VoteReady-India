@@ -15,7 +15,9 @@ export type AnalyticsEventName =
   | 'election_basics_back_clicked'
   | 'reminder_preferences_saved'
   | 'reminder_preferences_reset'
-  | 'auth_shell_viewed';
+  | 'auth_panel_viewed'
+  | 'sign_in_initiated'
+  | 'sign_out_initiated';
 
 /**
  * Analytics Event Payload interface
@@ -31,6 +33,7 @@ export interface AnalyticsEventPayload {
   storageMode?: 'local' | 'cloud';
   cloudSyncActive?: boolean;
   authMode?: string;
+  signedIn?: boolean;
   appCheckEnabled?: boolean;
   remindersEnabled?: boolean;
   preferredChannelPlaceholder?: string;
