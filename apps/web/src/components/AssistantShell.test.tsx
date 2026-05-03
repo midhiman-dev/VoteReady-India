@@ -150,4 +150,68 @@ describe('AssistantShell', () => {
     expect(saveGuidanceItem).toHaveBeenCalled();
     expect(screen.getByText(/✓ saved locally/i)).toBeInTheDocument();
   });
+
+  it('shows input intent hint when typing an eligibility question', async () => {
+    render(<AssistantShell />);
+    const textarea = screen.getByLabelText(/ask a question/i);
+    fireEvent.change(textarea, { target: { value: 'Am I eligible to vote?' } });
+    // Hint appears after 8+ chars and detected intent
+    expect(screen.getByRole('status', { hidden: true })).toBeInTheDocument();
+    expect(screen.getByText(/eligibility/i)).toBeInTheDocument();
+  });
+
+  it('shows follow-up chips after a response is received', async () => {
+    const mockResponse: AssistantResponse = {
+      id: 'resp-followup',
+      status: 'answered',
+      language: 'simple_english',
+      explanationMode: 'simple',
+      answerBlocks: [
+        { type: 'short_answer', content: 'You can register on the NVSP portal.' },
+      ],
+      sources: [],
+      generatedAt: '2026-04-28T00:00:00Z',
+    };
+
+    vi.mocked(postAssistantRequest).mockResolvedValueOnce(mockResponse);
+
+    render(<AssistantShell />);
+
+    const textarea = screen.getByLabelText(/ask a question/i);
+    fireEvent.change(textarea, { target: { value: 'How do I register to vote?' } });
+    fireEvent.click(screen.getByRole('button', { name: /ask assistant/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText('You can register on the NVSP portal.')).toBeInTheDocument();
+    });
+
+    // Follow-up section should appear
+    expect(screen.getByText(/you might also want to ask/i)).toBeInTheDocument();
+    expect(screen.getByRole('group', { name: /follow-up questions/i })).toBeInTheDocument();
+  });
+
+  it('shows continuity hint after a response', async () => {
+    const mockResponse: AssistantResponse = {
+      id: 'resp-cont',
+      status: 'answered',
+      language: 'simple_english',
+      explanationMode: 'simple',
+      answerBlocks: [{ type: 'short_answer', content: 'Test answer.' }],
+      sources: [],
+      generatedAt: '2026-04-28T00:00:00Z',
+    };
+
+    vi.mocked(postAssistantRequest).mockResolvedValueOnce(mockResponse);
+    render(<AssistantShell />);
+
+    const textarea = screen.getByLabelText(/ask a question/i);
+    fireEvent.change(textarea, { target: { value: 'Some question here' } });
+    fireEvent.click(screen.getByRole('button', { name: /ask assistant/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText('Test answer.')).toBeInTheDocument();
+    });
+
+    expect(screen.getByText(/ask a follow-up or explore another topic/i)).toBeInTheDocument();
+  });
 });

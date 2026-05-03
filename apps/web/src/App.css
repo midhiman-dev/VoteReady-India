@@ -310,6 +310,153 @@ textarea:focus, select:focus {
 }
 
 /* ─────────────────────────────────────────────
+   TASK 004 — PERCEIVED INTELLIGENCE LAYER
+───────────────────────────────────────────── */
+
+/* Input awareness hint — shown while typing */
+.input-intent-hint {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.4rem 0 0;
+  font-size: 0.8rem;
+  color: #4338ca;
+  font-style: italic;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.hint-icon {
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+/* Intent badge in response meta bar */
+.meta-intent {
+  background: #f0f9ff;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+}
+
+/* Intent-highlighted answer block — stronger emphasis */
+.answer-section--intent-highlighted {
+  background: #f0f4ff !important;
+  border-color: #c7d2fe !important;
+  border-left-color: #4f46e5 !important;
+}
+
+.answer-section--intent-highlighted .answer-direct-text {
+  color: #1e1b4b;
+}
+
+/* Personalisation badge on context block */
+.intent-context-badge {
+  display: inline-block;
+  margin-top: 0.5rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  background: #ede9fe;
+  color: #6d28d9;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Structured next-steps layout */
+.next-steps-structure {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.next-step-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.88rem;
+  color: #374151;
+  line-height: 1.4;
+}
+
+.next-step-num {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 0.7rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+
+.next-steps-detail {
+  font-size: 0.88rem !important;
+  color: #4b5563 !important;
+  margin-top: 0 !important;
+}
+
+/* Source intent framing preamble */
+.source-intent-framing {
+  font-size: 0.82rem;
+  color: #374151;
+  font-style: italic;
+  margin: 0 0 0.75rem 0;
+  padding: 0.5rem 0.75rem;
+  background: #f8fafc;
+  border-left: 3px solid #6366f1;
+  border-radius: 0 6px 6px 0;
+}
+
+/* Follow-up suggestions section */
+.followup-section {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px dashed #e5e7eb;
+}
+
+.followup-label {
+  margin: 0 0 0.6rem 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.followup-chips {
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.followup-chip {
+  font-size: 0.78rem !important;
+  padding: 0.3rem 0.7rem !important;
+  background: #fafafa !important;
+  border-color: #d1d5db !important;
+  color: #374151 !important;
+}
+
+.followup-chip:hover {
+  background: #f3f4f6 !important;
+  border-color: #9ca3af !important;
+  color: #111827 !important;
+}
+
+/* Conversational continuity hint */
+.continuity-hint {
+  margin: 0.75rem 0 0;
+  font-size: 0.78rem;
+  color: #9ca3af;
+  text-align: center;
+  font-style: italic;
+}
+
+/* ─────────────────────────────────────────────
    ASSISTANT SHELL STYLES
 ───────────────────────────────────────────── */
 
