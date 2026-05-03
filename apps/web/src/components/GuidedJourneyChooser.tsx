@@ -3,6 +3,13 @@ import { GUIDED_JOURNEY_SUMMARIES, GuidedJourneySummary } from "@voteready/share
 import { GuidedJourneyDetail } from "./GuidedJourneyDetail";
 import { trackEvent } from "../lib/analytics";
 
+const formatStatus = (status: string) => {
+  const normalized = status.replace(/_/g, ' ');
+  if (status === 'coming_soon' || status === 'pending') return `⏳ ${normalized}`;
+  if (status === 'active') return `✓ ${normalized}`;
+  return `⏳ ${normalized}`;
+};
+
 export const GuidedJourneyChooser: React.FC = () => {
   const [selectedJourney, setSelectedJourney] = useState<GuidedJourneySummary | null>(null);
 
@@ -53,7 +60,7 @@ export const GuidedJourneyChooser: React.FC = () => {
                 className="status-label"
                 aria-label={`Journey status: ${journey.status.replace(/_/g, " ")}`}
               >
-                {journey.status.replace(/_/g, " ")}
+                {formatStatus(journey.status)}
               </span>
             </button>
           </div>
