@@ -24,13 +24,19 @@ describe('AssistantShell', () => {
   it('renders title and safety messaging', () => {
     render(<AssistantShell />);
     expect(screen.getByText('Ask VoteReady')).toBeInTheDocument();
-    expect(screen.getByText(/real source-backed election guidance is not active yet/i)).toBeInTheDocument();
+    expect(screen.getByText(/can't verify real election guidance yet/i)).toBeInTheDocument();
   });
 
-  it('renders safe default question', () => {
+  it('renders empty default question', () => {
     render(<AssistantShell />);
     const textarea = screen.getByLabelText(/ask a question/i) as HTMLTextAreaElement;
-    expect(textarea.value).toBe('Can VoteReady India answer questions yet?');
+    expect(textarea.value).toBe('');
+  });
+
+  it('renders suggested question chips in empty state', () => {
+    render(<AssistantShell />);
+    expect(screen.getByRole('group', { name: /suggested questions/i })).toBeInTheDocument();
+    expect(screen.getByLabelText(/ask: how do i register to vote/i)).toBeInTheDocument();
   });
 
   it('renders language options', () => {
@@ -73,6 +79,9 @@ describe('AssistantShell', () => {
 
     render(<AssistantShell />);
     
+    const textarea = screen.getByLabelText(/ask a question/i);
+    fireEvent.change(textarea, { target: { value: 'Can VoteReady India answer questions yet?' } });
+
     const submitBtn = screen.getByRole('button', { name: /ask assistant/i });
     fireEvent.click(submitBtn);
 
@@ -86,7 +95,8 @@ describe('AssistantShell', () => {
       expect(screen.getByText('I am not able to answer specific voting questions yet.')).toBeInTheDocument();
     });
 
-    expect(screen.getByText('Sources returned: 0')).toBeInTheDocument();
+    // The disclaimer from the mock response should be present
+    expect(screen.getByText('This is a test response.')).toBeInTheDocument();
   });
 
   it('displays error state if the mocked API client rejects', async () => {
@@ -94,6 +104,8 @@ describe('AssistantShell', () => {
 
     render(<AssistantShell />);
     
+    const textarea = screen.getByLabelText(/ask a question/i);
+    fireEvent.change(textarea, { target: { value: 'test question' } });
     const submitBtn = screen.getByRole('button', { name: /ask assistant/i });
     fireEvent.click(submitBtn);
 
@@ -122,7 +134,9 @@ describe('AssistantShell', () => {
 
     render(<AssistantShell />);
     
-    // Submit to get response
+    // Type a question and submit
+    const textarea = screen.getByLabelText(/ask a question/i);
+    fireEvent.change(textarea, { target: { value: 'test question' } });
     fireEvent.click(screen.getByRole('button', { name: /ask assistant/i }));
 
     await waitFor(() => {
@@ -135,5 +149,69 @@ describe('AssistantShell', () => {
 
     expect(saveGuidanceItem).toHaveBeenCalled();
     expect(screen.getByText(/✓ saved locally/i)).toBeInTheDocument();
+  });
+
+  it('shows input intent hint when typing an eligibility question', async () => {
+    render(<AssistantShell />);
+    const textarea = screen.getByLabelText(/ask a question/i);
+    fireEvent.change(textarea, { target: { value: 'Am I eligible to vote?' } });
+    // Hint appears after 8+ chars and detected intent
+    expect(screen.getByRole('status', { hidden: true })).toBeInTheDocument();
+    expect(screen.getByText(/eligibility/i)).toBeInTheDocument();
+  });
+
+  it('shows follow-up chips after a response is received', async () => {
+    const mockResponse: AssistantResponse = {
+      id: 'resp-followup',
+      status: 'answered',
+      language: 'simple_english',
+      explanationMode: 'simple',
+      answerBlocks: [
+        { type: 'short_answer', content: 'You can register on the NVSP portal.' },
+      ],
+      sources: [],
+      generatedAt: '2026-04-28T00:00:00Z',
+    };
+
+    vi.mocked(postAssistantRequest).mockResolvedValueOnce(mockResponse);
+
+    render(<AssistantShell />);
+
+    const textarea = screen.getByLabelText(/ask a question/i);
+    fireEvent.change(textarea, { target: { value: 'How do I register to vote?' } });
+    fireEvent.click(screen.getByRole('button', { name: /ask assistant/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText('You can register on the NVSP portal.')).toBeInTheDocument();
+    });
+
+    // Follow-up section should appear
+    expect(screen.getByText(/you might also want to ask/i)).toBeInTheDocument();
+    expect(screen.getByRole('group', { name: /follow-up questions/i })).toBeInTheDocument();
+  });
+
+  it('shows continuity hint after a response', async () => {
+    const mockResponse: AssistantResponse = {
+      id: 'resp-cont',
+      status: 'answered',
+      language: 'simple_english',
+      explanationMode: 'simple',
+      answerBlocks: [{ type: 'short_answer', content: 'Test answer.' }],
+      sources: [],
+      generatedAt: '2026-04-28T00:00:00Z',
+    };
+
+    vi.mocked(postAssistantRequest).mockResolvedValueOnce(mockResponse);
+    render(<AssistantShell />);
+
+    const textarea = screen.getByLabelText(/ask a question/i);
+    fireEvent.change(textarea, { target: { value: 'Some question here' } });
+    fireEvent.click(screen.getByRole('button', { name: /ask assistant/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText('Test answer.')).toBeInTheDocument();
+    });
+
+    expect(screen.getByText(/ask a follow-up or explore another topic/i)).toBeInTheDocument();
   });
 });

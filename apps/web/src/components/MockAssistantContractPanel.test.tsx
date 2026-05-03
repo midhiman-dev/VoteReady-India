@@ -79,7 +79,7 @@ describe('MockAssistantContractPanel', () => {
       expect(screen.getByText('To register to vote, you need to fill Form 6.')).toBeInTheDocument();
     });
 
-    expect(screen.getByText('Sources returned: 0')).toBeInTheDocument();
+    expect(screen.getByText('This is a mock response.')).toBeInTheDocument();
   });
 
   it('displays error state if the mocked API client rejects', async () => {
